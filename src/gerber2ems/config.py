@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import sys
+import os
 import logging
 from typing import Any, List, Optional, Union, Tuple, Dict
 from enum import Enum
@@ -9,7 +10,6 @@ from enum import Enum
 from gerber2ems.constants import CONFIG_FORMAT_VERSION, UNIT
 
 logger = logging.getLogger(__name__)
-
 
 class PortConfig:
     """Class representing and parsing port config."""
@@ -26,7 +26,6 @@ class PortConfig:
         self.plane = get(config, ["plane"], int)
         self.dB_margin = get(config, ["dB_margin"], (float, int), -15)
         self.excite = get(config, ["excite"], bool, False)
-
 
 class DifferentialPairConfig:
     """Class representing and parsing differential pair config."""
@@ -85,7 +84,10 @@ class LayerConfig:
 
     def __init__(self, config: Any) -> None:
         """Initialize LayerConfig based on passed json object."""
+        self.name = config.get("name", None)
         self.kind = self.parse_kind(config["type"])
+        self.export_field = config.get("export_field", False)
+        self.z_mesh_count = config.get("z_mesh_count", None)
         self.thickness = 0
         if config["thickness"] is not None:
             self.thickness = config["thickness"] / 1000 / UNIT
@@ -93,6 +95,17 @@ class LayerConfig:
             self.file = config["name"].replace(".", "_")
         elif self.kind == LayerKind.SUBSTRATE:
             self.epsilon = config["epsilon"]
+            self.file = None
+            self.duplicate_z = []
+            if "override" in config:
+                override = config["override"]
+                logging.debug(f"Overriding substrate with gerber file {override}")
+                self.file = override
+            if "duplicate_z" in config:
+                duplicate_z = config["duplicate_z"]
+                logging.debug(f"Duplicating substrate layer at offsets: {duplicate_z} mm")
+                self.duplicate_z = [z / 1000 / UNIT for z in duplicate_z]
+            self.priority_offset = config.get("priority_offset", None)
 
     def __repr__(self):
         """Get human-readable string describing layer."""
@@ -105,16 +118,12 @@ class LayerConfig:
             return LayerKind.SUBSTRATE
         if kind == "copper":
             return LayerKind.METAL
-        return LayerKind.OTHER
-
+        raise Exception(f"Unknown layer kind: {kind}")
 
 class LayerKind(Enum):
     """Enum describing layer type."""
-
     SUBSTRATE = 1
     METAL = 2
-    OTHER = 3
-
 
 def get(
     config: Any,
@@ -154,6 +163,21 @@ def get(
         )
         return default
 
+class NanomeshConfig:
+    def __init__(self, json: Any):
+        self.quality = int(get(json, ["nanomesh", "quality"], (int,), 5))
+        self.max_triangle_area = int(get(json, ["nanomesh", "max_triangle_area"], (int,), 10000))
+        self.min_spacing = float(get(json, ["nanomesh", "min_spacing"], (int, float), 0.5))
+        self.max_edge_distance = float(get(json, ["nanomesh", "max_edge_distance"], (int, float), 10000))
+
+class DirectoryConfig:
+    def __init__(self, input_dir: str, output_dir: str):
+        self.input_dir = input_dir
+        self.output_dir = output_dir
+        self.simulation_dir = os.path.join(output_dir, "simulation")
+        self.geometry_dir = os.path.join(output_dir, "geometry")
+        self.results_dir = os.path.join(output_dir, "results")
+        self.fab_dir = os.path.join(output_dir, "fab")
 
 class Config:
     """Class representing and parsing config."""
@@ -200,8 +224,12 @@ class Config:
         self.margin_z = int(get(json, ["margin", "z"], (float, int), 3000))
         self.margin_mesh_xy = int(get(json, ["mesh", "margin", "xy"], (float, int), 200))
         self.margin_mesh_z = int(get(json, ["mesh", "margin", "z"], (float, int), 200))
+        self.smoothing_ratio = float(get(json, ["mesh", "smoothing_ratio"], float, 2))
         self.via_plating = int(get(json, ["via", "plating_thickness"], (int, float), 50))
         self.via_filling_epsilon = float(get(json, ["via", "filling_epsilon"], (int, float), 1))
+        self.x_offset = float(get(json, ["offset", "x"], (int, float), 0))
+        self.y_offset = float(get(json, ["offset", "y"], (int, float), 0))
+        self.nanomesh = NanomeshConfig(json)
 
         self.arguments = args
 
@@ -212,7 +240,7 @@ class Config:
         logger.debug("Found %d ports", len(self.ports))
 
         diff_pairs = get(json, ["differential_pairs"], list, [])
-        self.diff_pairs: List[DifferentialPairConfig] = []
+        self.diff_pairs: List[DiffePairConfig] = []
         for diff_pair in diff_pairs:
             self.diff_pairs.append(DifferentialPairConfig(diff_pair, len(self.ports)))
         logger.debug(f"Found {len(self.diff_pairs)} differential pairs")
@@ -223,21 +251,29 @@ class Config:
             self.traces.append(TraceConfig(trace, len(self.ports)))
         logger.debug(f"Found {len(self.traces)} traces")
 
-        self.layers: List[LayerConfig] = []
+        self.load_layers(get(json, ["layers"], list, []))
+
+        self.dirs = DirectoryConfig(args.input, args.output)
 
         self.__class__._instance = self
 
-    def load_stackup(self, stackup) -> None:
-        """Load stackup from json object."""
-        layers = []
-        for layer in stackup["layers"]:
-            layers.append(LayerConfig(layer))
-        self.layers = list(
-            filter(
-                lambda layer: layer.kind in [LayerKind.METAL, LayerKind.SUBSTRATE],
-                layers,
-            )
-        )
+    def load_layers(self, layers) -> None:
+        layers = [LayerConfig(layer) for layer in layers]
+        is_sim = lambda layer: layer.kind in (LayerKind.METAL, LayerKind.SUBSTRATE)
+        layers = [layer for layer in layers if is_sim(layer)]
+        # NOTE: If our metal layer has thickness we extend the height of the surrounding dielectric layers so the height of the stackup is correct
+        total_layers = len(layers)
+        for index in range(total_layers):
+            layer = layers[index] 
+            prev_layer = layers[index-1] if index > 1 else None
+            next_layer = layers[index+1] if index < (total_layers-1) else None
+            if layer.thickness > 0 and layer.kind == LayerKind.METAL:
+                delta = layer.thickness / 2
+                if prev_layer and prev_layer.kind == LayerKind.SUBSTRATE:
+                    prev_layer.thickness += delta
+                if next_layer and next_layer.kind == LayerKind.SUBSTRATE:
+                    next_layer.thickness += delta
+        self.layers = layers
 
     def get_substrates(self) -> List[LayerConfig]:
         """Return substrate layers configs."""

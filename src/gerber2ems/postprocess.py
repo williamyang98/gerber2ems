@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import skrf
 
 from gerber2ems.config import Config
-from gerber2ems.constants import RESULTS_DIR, PLOT_STYLE
+from gerber2ems.constants import PLOT_STYLE
 
 logger = logging.getLogger(__name__)
 
@@ -116,6 +116,7 @@ class Postprocesor:
 
     def render_s_params(self):
         """Render all S parameter plots to files."""
+        config = Config.get()
         logger.info("Rendering S-parameter plots")
         plt.style.use(PLOT_STYLE)
         for i in range(self.count):
@@ -133,13 +134,14 @@ class Postprocesor:
                 axes.set_xlabel("Frequency, f [GHz]")
                 axes.set_ylabel("Magnitude, [dB]")
                 axes.grid(True)
-                fig.savefig(os.path.join(os.getcwd(), RESULTS_DIR, f"S_x{i+1}.png"))
+                fig.savefig(os.path.join(config.dirs.results_dir, f"S_x{i+1}.png"))
 
     def render_diff_pair_s_params(self):
         """Render differential pair S parameter plots to files."""
         logger.info("Rendering differential pair S-parameter plots")
         plt.style.use(PLOT_STYLE)
-        for pair in Config.get().diff_pairs:
+        config = Config.get()
+        for pair in config.diff_pairs:
             if (
                 pair.correct
                 and self.is_valid(self.s_params[pair.start_p][pair.start_p])
@@ -174,13 +176,14 @@ class Postprocesor:
                 axes.set_xlabel("Frequency, f [GHz]")
                 axes.set_ylabel("Magnitude, [dB]")
                 axes.grid(True)
-                fig.savefig(os.path.join(os.getcwd(), RESULTS_DIR, f"SDD_{pair.name}"))
+                fig.savefig(os.path.join(config.dirs.results_dir, f"SDD_{pair.name}"))
 
     def render_diff_impedance(self):
         """Render differential pair impedance plots to files."""
         logger.info("Rendering differential pair impedance plots")
         plt.style.use(PLOT_STYLE)
-        for pair in Config.get().diff_pairs:
+        config = Config.get()
+        for pair in config.diff_pairs:
             if (
                 pair.correct
                 and self.is_valid(self.s_params[pair.start_p][pair.start_p])
@@ -219,7 +222,7 @@ class Postprocesor:
                     axs[1].grid(True)
 
                     fig.savefig(
-                        os.path.join(os.getcwd(), RESULTS_DIR, f"Z_diff_{pair.name}.png"),
+                        os.path.join(config.dirs.results_dir, f"Z_diff_{pair.name}.png"),
                         bbox_inches="tight",
                     )
                 else:
@@ -238,6 +241,7 @@ class Postprocesor:
         """Render all ports impedance plots to files."""
         logger.info("Rendering impedance plots")
         plt.style.use(PLOT_STYLE)
+        config = Config.get()
         for port, impedance in enumerate(self.impedances):
             if self.is_valid(impedance):
                 fig, axs = plt.subplots(2)
@@ -264,7 +268,7 @@ class Postprocesor:
                     axs[0].axhline(np.real(max_z), color="red")
 
                 fig.savefig(
-                    os.path.join(os.getcwd(), RESULTS_DIR, f"Z_{port+1}.png"),
+                    os.path.join(config.dirs.results_dir, f"Z_{port+1}.png"),
                     bbox_inches="tight",
                 )
 
@@ -273,6 +277,7 @@ class Postprocesor:
         logger.info("Rendering smith charts")
         plt.style.use(PLOT_STYLE)
         net = skrf.Network(frequency=self.frequencies / 1e9, s=self.s_params.transpose(2, 0, 1))
+        config = Config.get()
         for port in range(self.count):
             if self.is_valid(self.s_params[port][port]):
                 fig, axes = plt.subplots()
@@ -287,7 +292,7 @@ class Postprocesor:
                     draw_vswr=[vswr_margin],
                 )
                 fig.savefig(
-                    os.path.join(os.getcwd(), RESULTS_DIR, f"S_{port+1}{port+1}_smith.png"),
+                    os.path.join(config.dirs.results_dir, f"S_{port+1}{port+1}_smith.png"),
                     bbox_inches="tight",
                 )
 
@@ -295,7 +300,8 @@ class Postprocesor:
         """Render all trace delay plots to files."""
         logger.info("Rendering trace delay plots")
         plt.style.use(PLOT_STYLE)
-        for trace in Config.get().traces:
+        config = Config.get()
+        for trace in config.traces:
             if trace.correct and self.is_valid(self.delays[trace.stop][trace.start]):
                 fig, axes = plt.subplots()
                 axes.plot(
@@ -307,9 +313,9 @@ class Postprocesor:
                 axes.set_xlabel("Frequency, f [GHz]")
                 axes.set_ylabel("Trace delay, [ns]")
                 axes.grid(True)
-                fig.savefig(os.path.join(os.getcwd(), RESULTS_DIR, f"{trace.name}_delay.png"))
+                fig.savefig(os.path.join(config.dirs.results_dir, f"{trace.name}_delay.png"))
 
-        for pair in Config.get().diff_pairs:
+        for pair in config.diff_pairs:
             if (
                 pair.correct
                 and self.is_valid(self.delays[pair.stop_p][pair.start_n])
@@ -330,13 +336,14 @@ class Postprocesor:
                 axes.set_xlabel("Frequency, f [GHz]")
                 axes.set_ylabel("Trace delay, [ns]")
                 axes.grid(True)
-                fig.savefig(os.path.join(os.getcwd(), RESULTS_DIR, f"{pair.name}_delay.png"))
+                fig.savefig(os.path.join(config.dirs.results_dir, f"{pair.name}_delay.png"))
 
     def save_to_file(self) -> None:
         """Save all parameters to files."""
+        config = Config.get()
         for i, _ in enumerate(self.s_params):
             if self.is_valid(self.s_params[i][i]):
-                self.save_port_to_file(i, RESULTS_DIR)
+                self.save_port_to_file(i, config.dirs.results_dir)
 
     def save_port_to_file(self, port_number: int, path) -> None:
         """Save all parameters from single excitation."""

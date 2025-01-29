@@ -13,8 +13,6 @@ import numpy as np
 from gerber2ems.config import Config, PortConfig, LayerKind
 from gerber2ems.constants import (
     UNIT,
-    SIMULATION_DIR,
-    GEOMETRY_DIR,
     VIA_POLYGON,
 )
 import gerber2ems.importer as importer
@@ -52,8 +50,9 @@ class Simulation:
 
     def add_mesh(self) -> None:
         """Add mesh to simulation."""
-        pcb_width = Config.get().pcb_width
-        pcb_height = Config.get().pcb_height
+        config = Config.get()
+        pcb_width = config.pcb_width
+        pcb_height = config.pcb_height
         if pcb_width is None or pcb_height is None:
             logger.error("PCB dimensions are not set")
             sys.exit(1)
@@ -61,12 +60,12 @@ class Simulation:
         # Min-Max
         x_lines = np.array(
             (
-                -Config.get().margin_xy,
-                pcb_width + Config.get().margin_xy,
+                -config.margin_xy,
+                pcb_width + config.margin_xy,
             )
         )
         # PCB
-        mesh = Config.get().pcb_mesh_xy
+        mesh = config.pcb_mesh_xy
         x_lines = np.concatenate(
             (
                 x_lines,
@@ -75,18 +74,18 @@ class Simulation:
         )
         self.mesh.AddLine("x", x_lines)
         # Margin
-        self.mesh.SmoothMeshLines("x", Config.get().margin_mesh_xy, ratio=1.2)
+        self.mesh.SmoothMeshLines("x", config.margin_mesh_xy, ratio=config.smoothing_ratio)
 
         #### Y Mesh
         # Min-Max
         y_lines = np.array(
             (
-                -Config.get().margin_xy,
-                pcb_height + Config.get().margin_xy,
+                -config.margin_xy,
+                pcb_height + config.margin_xy,
             )
         )
         # PCB
-        mesh = Config.get().pcb_mesh_xy
+        mesh = config.pcb_mesh_xy
         y_lines = np.concatenate(
             [
                 y_lines,
@@ -95,30 +94,46 @@ class Simulation:
         )
         self.mesh.AddLine("y", y_lines)
         # Margin
-        self.mesh.SmoothMeshLines("y", Config.get().margin_mesh_xy, ratio=1.2)
+        self.mesh.SmoothMeshLines("y", config.margin_mesh_xy, ratio=config.smoothing_ratio)
 
         #### Z Mesh
         # Min-0-Max
 
-        z_lines = np.array([0])
+        z_lines = np.array([])
         offset = 0
-        z_count = Config.get().inter_copper_layers
-        if z_count % 2 == 1:  # Increasing by one to always have z_line at dumpbox
-            z_count += 1
-        for layer in Config.get().get_substrates():
+        z_count = int(config.inter_copper_layers)
+        make_even = lambda x: x if x % 2 == 0 else x + 1
+        make_odd = lambda x: x if x % 2 != 0 else x + 1
+        for layer in config.layers:
+            if layer.thickness == 0:
+                continue
+            # Metal layer is embedded in dielectric so z-offset from previous substrate layers will lie halfway inside metal layer
+            z_offset = offset if layer.kind == LayerKind.SUBSTRATE else offset + layer.thickness/2
+            # Metal layers are usually not adjacent so we linearly spread z-mesh grid from start to end inclusive
+            z_line_endpoint = (layer.kind == LayerKind.METAL)
+            z_line_count = layer.z_mesh_count or z_count
+            # If we are exporting fields make sure there is a field line in the middle of the layer
+            if layer.export_field:
+                if layer.kind == LayerKind.METAL:
+                    z_line_count = make_odd(z_line_count)
+                else:
+                    z_line_count = make_even(z_line_count)
             z_lines = np.concatenate(
                 (
                     z_lines,
-                    np.linspace(offset - layer.thickness, offset, z_count, endpoint=False),
+                    np.linspace(z_offset - layer.thickness, z_offset, z_line_count, endpoint=z_line_endpoint),
+                    # np.linspace(z_offset - layer.thickness, z_offset, z_line_count, endpoint=z_line_endpoint),
                 )
             )
-            offset -= layer.thickness
-        z_lines = np.concatenate([z_lines, [Config.get().margin_z, offset - Config.get().margin_z]])
-        z_lines = np.round(z_lines)
+            # Metal layers are embedded into the dielectric so we don't consider their z height
+            if layer.kind == LayerKind.SUBSTRATE:
+                offset -= layer.thickness
+        z_lines = np.concatenate([z_lines, [config.margin_z, 0, offset, offset - config.margin_z]])
+        # z_lines = np.round(z_lines)
 
         self.mesh.AddLine("z", z_lines)
         # Margin
-        self.mesh.SmoothMeshLines("z", Config.get().margin_mesh_z, ratio=1.2)
+        self.mesh.SmoothMeshLines("z", config.margin_mesh_z, ratio=config.smoothing_ratio)
 
         logger.debug("Mesh x lines: %s", x_lines)
         logger.debug("Mesh y lines: %s", y_lines)
@@ -141,30 +156,33 @@ class Simulation:
         """Add metal from all gerber files."""
         logger.info("Adding copper from gerber files")
 
-        importer.process_gbrs_to_pngs()
-
         offset = 0
-        index = 0
+        metal_index = 0
+        substrate_index = 0
         for layer in Config.get().layers:
             if layer.kind == LayerKind.SUBSTRATE:
                 offset -= layer.thickness
+                substrate_index += 1
             elif layer.kind == LayerKind.METAL:
                 logger.info("Adding contours for %s", layer.file)
                 contours = importer.get_triangles(layer.file + ".png")
-                self.add_contours(contours, offset, index)
-                index += 1
+                material = self.gerber_materials[metal_index]
+                self.add_contours(contours, offset, material, layer.thickness)
+                metal_index += 1
 
-    def add_contours(self, contours: np.ndarray, z_height: float, layer_index: int) -> None:
+    def add_contours(self, contours: np.ndarray, z_height: float, material, thickness: float) -> None:
         """Add contours as flat polygons on specified z-height."""
-        logger.debug("Adding contours on z=%f", z_height)
+        logger.debug("Adding contours on z=%f, thickness=%f", z_height, thickness)
         for contour in contours:
             points: List[List[float]] = [[], []]
             for point in contour:
                 # Half of the border thickness is subtracted as image is shifted by it
                 points[0].append((point[1]))
                 points[1].append(Config.get().pcb_height - point[0])
-
-            self.gerber_materials[layer_index].AddPolygon(points, "z", z_height, priority=1)
+            if thickness > 0.0:
+                material.AddLinPoly(points, "z", z_height+thickness/2, -thickness, priority=50)
+            else:
+                material.AddPolygon(points, "z", z_height, priority=50)
 
     def get_metal_layer_offset(self, index: int) -> float:
         """Get z offset of nth metal layer."""
@@ -325,16 +343,39 @@ class Simulation:
 
         offset = 0
         for i, layer in enumerate(Config.get().get_substrates()):
-            self.substrate_materials[i].AddBox(
-                [0, 0, offset],
-                [
-                    Config.get().pcb_width,
-                    Config.get().pcb_height,
-                    offset - layer.thickness,
-                ],
-                priority=-i,
-            )
-            logger.debug("Added substrate from %f to %f", offset, offset - layer.thickness)
+            if not layer.file is None:
+                logger.debug("Create layer from gerber file %s", layer.file)
+                contours = importer.get_triangles(layer.file + ".png")
+                material = self.substrate_materials[i]
+                # self.add_contours(contours, offset, material)
+                z_start = offset
+                z_end = offset - layer.thickness
+                priority_offset = 0
+                if not layer.priority_offset is None:
+                    logger.debug(f"Layer has priority offset {layer.priority_offset}")
+                    priority_offset = layer.priority_offset
+                for contour in contours:
+                    points: List[List[float]] = [[], []]
+                    for point in contour:
+                        # Half of the border thickness is subtracted as image is shifted by it
+                        points[0].append((point[1]))
+                        points[1].append(Config.get().pcb_height - point[0])
+                    material.AddLinPoly(points, "z", z_start, -layer.thickness, priority=-i + priority_offset)
+                    for z_offset in layer.duplicate_z:
+                        material.AddLinPoly(points, "z", z_start - z_offset, -layer.thickness, priority=-i + priority_offset)
+                logger.debug("Added substrate as linpoly from z=[%f,%f] um, thickness=%f um", z_start, z_end, layer.thickness)
+                logger.debug(f"Substrate duplicate z offsets: {layer.duplicate_z} um")
+            else:
+                self.substrate_materials[i].AddBox(
+                    [0, 0, offset],
+                    [
+                        Config.get().pcb_width,
+                        Config.get().pcb_height,
+                        offset - layer.thickness,
+                    ],
+                    priority=-i,
+                )
+                logger.debug("Added substrate as box from %f to %f", offset, offset - layer.thickness)
             offset -= layer.thickness
 
     def add_vias(self):
@@ -346,42 +387,47 @@ class Simulation:
 
     def add_via(self, x_pos, y_pos, diameter):
         """Add via at specified position with specified diameter."""
-        thickness = sum(layer.thickness for layer in Config.get().get_substrates())
+        config = Config.get()
+        thickness = sum(layer.thickness for layer in config.get_substrates())
 
         x_coords = []
         y_coords = []
         for i in range(VIA_POLYGON):
             x_coords.append(x_pos + np.sin(i / VIA_POLYGON * 2 * np.pi) * diameter / 2)
             y_coords.append(y_pos + np.cos(i / VIA_POLYGON * 2 * np.pi) * diameter / 2)
-        self.via_filling_material.AddLinPoly([x_coords, y_coords], "z", -thickness, thickness, priority=51)
+        self.via_filling_material.AddLinPoly([x_coords, y_coords], "z", -thickness, thickness, priority=101)
 
         x_coords = []
         y_coords = []
         for i in range(VIA_POLYGON)[::-1]:
-            x_coords.append(x_pos + np.sin(i / VIA_POLYGON * 2 * np.pi) * (diameter / 2 + Config.get().via_plating))
-            y_coords.append(y_pos + np.cos(i / VIA_POLYGON * 2 * np.pi) * (diameter / 2 + Config.get().via_plating))
-        self.via_material.AddLinPoly([x_coords, y_coords], "z", -thickness, thickness, priority=50)
+            x_coords.append(x_pos + np.sin(i / VIA_POLYGON * 2 * np.pi) * (diameter / 2 + config.via_plating))
+            y_coords.append(y_pos + np.cos(i / VIA_POLYGON * 2 * np.pi) * (diameter / 2 + config.via_plating))
+        self.via_material.AddLinPoly([x_coords, y_coords], "z", -thickness, thickness, priority=100)
 
     def add_dump_boxes(self):
-        """Add electric field dump box in whole bounding box of the PCB at half the thickness of each substrate."""
-        logger.info("Adding dump box for each dielectic")
+        """Add electric field measurement plane in the middle of each metal and substrate layer"""
         offset = 0
-        for i, layer in enumerate(Config.get().get_substrates()):
-            height = offset - layer.thickness / 2
-            logger.debug("Adding dump box at %f", height)
-            dump = self.csx.AddDump(f"e_field_{i}", sub_sampling=[1, 1, 1])
-            start = [
-                -Config.get().margin_xy,
-                -Config.get().margin_xy,
-                height,
-            ]
-            stop = [
-                Config.get().pcb_width + Config.get().margin_xy,
-                Config.get().pcb_height + Config.get().margin_xy,
-                height,
-            ]
-            dump.AddBox(start, stop)
-            offset -= layer.thickness
+        config = Config.get()
+        for i, layer in enumerate(config.layers):
+            if layer.export_field:
+                height = offset - layer.thickness/2
+                layer_kind = "metal" if layer.kind == LayerKind.METAL else "substrate"
+                logger.info("Adding dump box at i=%d, name=%s, z=%f, thickness=%s, kind=%s", i, layer.name, height, layer.thickness, layer_kind)
+                dump = self.csx.AddDump(f"e_field_{i}", sub_sampling=[1, 1, 1])
+                start = [
+                    -config.margin_xy,
+                    -config.margin_xy,
+                    height,
+                ]
+                stop = [
+                    config.pcb_width + config.margin_xy,
+                    config.pcb_height + config.margin_xy,
+                    height,
+                ]
+                dump.AddBox(start, stop)
+            # Metal layers are embedded in dielectric
+            if layer.kind == LayerKind.SUBSTRATE:
+                offset -= layer.thickness
 
     def set_boundary_conditions(self, pml=False):
         """Add boundary conditions. MUR for fast simulation, PML for more accurate."""
@@ -409,20 +455,29 @@ class Simulation:
         logger.debug("Setting excitation to sine at %f", freq)
         self.fdtd.SetSinusExcite(freq)
 
-    def run(self, excited_port_number, threads: None | int = None):
+    def set_step_excitation(self, freq):
+        logger.debug("Setting excitation to step at %f", freq)
+        self.fdtd.SetStepExcite(freq)
+
+    def run(self, name, threads: None | int = None):
         """Execute simulation."""
         logger.info("Starting simulation")
         cwd = os.getcwd()
-        if threads is not None:
-            self.fdtd.Run(os.path.join(os.getcwd(), SIMULATION_DIR, str(excited_port_number)), numThreads=threads)
+        config = Config.get()
+        path = os.path.join(config.dirs.simulation_dir, str(name))
+        abs_path = os.path.abspath(path)
+        logger.info(f"Running FTDT simulation: threads={threads}, path='{abs_path}'")
+        if threads is None:
+            self.fdtd.Run(abs_path)
         else:
-            self.fdtd.Run(os.path.join(os.getcwd(), SIMULATION_DIR, str(excited_port_number)))
+            self.fdtd.Run(abs_path, numThreads=threads)
 
         os.chdir(cwd)
 
     def save_geometry(self) -> None:
         """Save geometry to file."""
-        filename = os.path.join(os.getcwd(), GEOMETRY_DIR, "geometry.xml")
+        config = Config.get()
+        filename = os.path.join(config.dirs.geometry_dir, "geometry.xml")
         logger.info("Saving geometry to %s", filename)
         self.csx.Write2XML(filename)
 
@@ -436,7 +491,8 @@ class Simulation:
 
     def load_geometry(self) -> None:
         """Load geometry from file."""
-        filename = os.path.join(os.getcwd(), GEOMETRY_DIR, "geometry.xml")
+        config = Config.get()
+        filename = os.path.join(config.dirs.geometry_dir, "geometry.xml")
         logger.info("Loading geometry from %s", filename)
         if not os.path.exists(filename):
             logger.error("Geometry file does not exist. Did you run geometry step?")
@@ -445,12 +501,14 @@ class Simulation:
 
     def get_port_parameters(self, index: int, frequencies) -> Tuple[List, List]:
         """Return reflected and incident power vs frequency for each port."""
-        result_path = os.path.join(os.getcwd(), SIMULATION_DIR, str(index))
+        config = Config.get()
+        result_path = os.path.join(config.dirs.simulation_dir, f"{index}")
 
         incident: List[np.ndarray] = []
         reflected: List[np.ndarray] = []
         for index, port in enumerate(self.ports):
             try:
+                logger.debug("Calculating port parameters %d (%s)", index, result_path)
                 port.CalcPort(result_path, frequencies)
                 logger.debug("Found data for port %d", index)
             except IOError:

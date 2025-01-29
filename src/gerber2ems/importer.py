@@ -16,7 +16,6 @@ import matplotlib.pyplot as plt
 
 from gerber2ems.config import Config
 from gerber2ems.constants import (
-    GEOMETRY_DIR,
     UNIT,
     PIXEL_SIZE,
     BORDER_THICKNESS,
@@ -24,7 +23,6 @@ from gerber2ems.constants import (
 )
 
 logger = logging.getLogger(__name__)
-
 
 def process_gbrs_to_pngs():
     """Process all gerber files to PNG's.
@@ -34,8 +32,8 @@ def process_gbrs_to_pngs():
     Output is saved to `ems/geometry` folder
     """
     logger.info("Processing gerber files")
-
-    files = os.listdir(os.path.join(os.getcwd(), "fab"))
+    config = Config.get()
+    files = os.listdir(config.dirs.input_dir)
 
     edge = next(filter(lambda name: "Edge_Cuts.gbr" in name, files), None)
     if edge is None:
@@ -47,11 +45,11 @@ def process_gbrs_to_pngs():
         logger.warning("No copper gerbers found")
 
     for name in layers:
-        output = name.split("-")[-1].split(".")[0] + ".png"
+        output = name.split("-")[-1].split(".")[0]
         gbr_to_png(
-            os.path.join(os.getcwd(), "fab", name),
-            os.path.join(os.getcwd(), "fab", edge),
-            os.path.join(os.getcwd(), GEOMETRY_DIR, output),
+            os.path.join(config.dirs.input_dir, name),
+            os.path.join(config.dirs.input_dir, edge),
+            os.path.join(config.dirs.geometry_dir, output),
         )
 
 
@@ -63,7 +61,7 @@ def gbr_to_png(gerber_filename: str, edge_filename: str, output_filename: str) -
     Output DPI is based on PIXEL_SIZE constant.
     """
     logger.debug("Generating PNG for %s", gerber_filename)
-    not_cropped_name = f"{output_filename.split('.')[0]}_not_cropped.png"
+    not_cropped_name = f"{output_filename}_not_cropped.png"
 
     dpi = 1 / (PIXEL_SIZE * UNIT / 0.0254)
     if not dpi.is_integer():
@@ -79,12 +77,16 @@ def gbr_to_png(gerber_filename: str, edge_filename: str, output_filename: str) -
     not_cropped_image = PIL.Image.open(not_cropped_name)
 
     # image_width, image_height = not_cropped_image.size
-    cropped_image = not_cropped_image.crop(not_cropped_image.getbbox())
-    cropped_image.save(output_filename)
+    bbox = not_cropped_image.getbbox()
+    config = Config.get()
 
-    if not Config.get().arguments.debug:
-        os.remove(not_cropped_name)
-
+    # TODO: Figure out how to calculate cropped offset correctly so that
+    #       config.x_offset and config.y_offset don't need to be specified manually
+    logger.warning(f"Gerber cropped: name='{gerber_filename}', specified_offset=({config.x_offset},{config.y_offset}), crop_bbox={bbox}")
+    cropped_image = not_cropped_image.crop(bbox)
+    cropped_image.save(f"{output_filename}.png")
+    # if not Config.get().arguments.debug:
+    #     os.remove(not_cropped_name)
 
 def get_dimensions(input_filename: str) -> Tuple[int, int]:
     """Return board dimensions based on png.
@@ -92,7 +94,8 @@ def get_dimensions(input_filename: str) -> Tuple[int, int]:
     Opens PNG found in `ems/geometry` directory,
     gets it's size and subtracts border thickness to get board dimensions
     """
-    path = os.path.join(GEOMETRY_DIR, input_filename)
+    config = Config.get()
+    path = os.path.join(config.dirs.geometry_dir, input_filename)
     image = PIL.Image.open(path)
     image_width, image_height = image.size
     height = image_height * PIXEL_SIZE - BORDER_THICKNESS
@@ -109,24 +112,35 @@ def get_triangles(input_filename: str) -> np.ndarray:
     and then uses Nanomesh to create a triangular mesh of the copper.
     Returns a list of triangles, where each triangle consists of coordinates for each vertex.
     """
-    path = os.path.join(GEOMETRY_DIR, input_filename)
+    config = Config.get()
+    path = os.path.join(config.dirs.geometry_dir, input_filename)
     image = PIL.Image.open(path)
     gray = image.convert("L")
-    thresh = gray.point(lambda p: 255 if p < 230 else 0)
-    copper = Image(np.array(thresh))
+    threshold_cutoff = 32
+    thresh = gray.point(lambda p: 255 if p < threshold_cutoff else 0)
+    image_data = np.array(thresh)
+    copper = Image(image_data)
 
     mesher = Mesher2D(copper)
     # These constans are set so there won't be to many triangles.
     # If in some case triangles are too coarse they should be adjusted
-    mesher.generate_contour(max_edge_dist=10000, precision=2)
+    # mesher.generate_contour(max_edge_dist=10000, precision=2)
+    nanomesh_config = Config.get().nanomesh
+    mesher.generate_contour(
+        max_edge_dist=nanomesh_config.max_edge_distance,
+        precision=nanomesh_config.min_spacing,
+        group_regions=False
+    )
     mesher.plot_contour()
-    mesh = mesher.triangulate(opts="a100000")
+    # mesh = mesher.triangulate(opts="a100000")
+    # mesh = mesher.triangulate()
+    mesh = mesher.triangulate(opts=f"q{nanomesh_config.quality}a{nanomesh_config.max_triangle_area}")
 
-    if Config.get().arguments.debug:
-        filename = os.path.join(os.getcwd(), GEOMETRY_DIR, input_filename + "_mesh.png")
-        logger.debug("Saving mesh to file: %s", filename)
-        mesh.plot_mpl()
-        plt.savefig(filename, dpi=300)
+    # if Config.get().arguments.debug:
+    filename = os.path.join(config.dirs.geometry_dir, input_filename + "_mesh.png")
+    logger.debug("Saving mesh to file: %s", filename)
+    mesh.plot_mpl(lw=0.1)
+    plt.savefig(filename, dpi=600)
 
     points = mesh.get("triangle").points
     cells = mesh.get("triangle").cells
@@ -141,7 +155,33 @@ def get_triangles(input_filename: str) -> np.ndarray:
         ]
 
     # Selecting only triangles that represent copper
-    mask = kinds == 2.0
+    # mask = kinds == 2.0
+    is_region_copper = {}
+    for region in mesher.contour.region_markers:
+        x, y = region.point
+        x, y = int(x), int(y)
+        is_copper = image_data[x,y] < 127
+        is_region_copper[region.label] = is_copper
+    # mask = np.array([is_region_copper[x] for x in kinds])
+    # NOTE: We need to do this ugly hack because physical cell data is somethings wrong????
+    kind_to_region_id = {}
+    unique_kinds = np.unique(kinds)
+    remaining_kinds = set(kinds)
+    remaining_region_ids = set(is_region_copper.keys())
+    for kind in unique_kinds:
+        kind = int(kind)
+        if kind in is_region_copper:
+            kind_to_region_id[kind] = kind
+            remaining_kinds.remove(kind)
+            remaining_region_ids.remove(kind)
+    for kind, region_id in zip(remaining_kinds, remaining_region_ids):
+        kind = int(kind)
+        logger.warning(f"Applying hack to reassign dangling region kind={kind} to region_id={region_id}")
+        kind_to_region_id[kind] = region_id
+        logger.warning(f"Forcing hacked region to be copper")
+        is_region_copper[region_id] = True
+
+    mask = np.array([is_region_copper[kind_to_region_id[int(x)]] for x in kinds])
 
     logger.debug("Found %d triangles for %s", len(triangles[mask]), input_filename)
 
@@ -159,7 +199,8 @@ def get_vias() -> List[List[float]]:
     Looks for excellon file in `fab` directory. Its filename should end with `-PTH.drl`
     It then processes it to find all vias.
     """
-    files = os.listdir(os.path.join(os.getcwd(), "fab"))
+    config = Config.get()
+    files = os.listdir(config.dirs.input_dir)
     drill_filename = next(filter(lambda name: "-PTH.drl" in name, files), None)
     if drill_filename is None:
         logger.error("Couldn't find drill file")
@@ -168,67 +209,49 @@ def get_vias() -> List[List[float]]:
     drills = {0: 0.0}  # Drills are numbered from 1. 0 is added as a "no drill" option
     current_drill = 0
     vias: List[List[float]] = []
-    with open(os.path.join(os.getcwd(), "fab", drill_filename), "r", encoding="utf-8") as drill_file:
+    x_offset, y_offset = Config.get().x_offset, Config.get().y_offset
+    with open(os.path.join(config.dirs.input_dir, drill_filename), "r", encoding="utf-8") as drill_file:
         for line in drill_file.readlines():
             # Regex for finding drill sizes (in mm)
             match = re.fullmatch("T([0-9]+)C([0-9]+.[0-9]+)\\n", line)
             if match is not None:
+                logger.debug("Got drill size: id={0}, diameter={1} mm".format(match.group(1), match.group(2)))
                 drills[int(match.group(1))] = float(match.group(2)) / 1000 / UNIT
+                continue
 
             # Regex for finding drill switches (in mm)
             match = re.fullmatch("T([0-9]+)\\n", line)
             if match is not None:
+                logger.debug("Switching to drill bit: new_id={0}, old_id={1}".format(match.group(1), current_drill))
                 current_drill = int(match.group(1))
+                continue
 
             # Regex for finding hole positions (in mm)
-            match = re.fullmatch("X([0-9]+.[0-9]+)Y([0-9]+.[0-9]+)\\n", line)
+            match = re.fullmatch("X([\-]?[0-9]+\.[0-9]+)Y([\-]?[0-9]+\.[0-9]+)\\n", line)
             if match is not None:
                 if current_drill in drills:
                     logger.debug(
                         f"Adding via at: X{float(match.group(1)) / 1000 / UNIT}Y{float(match.group(2)) / 1000 / UNIT}"
                     )
+                    x_pos = float(match.group(1))
+                    y_pos = float(match.group(2))
+                    x_pos = x_pos - x_offset
+                    y_pos = y_pos - y_offset
+                    x_pos = x_pos / 1000 / UNIT
+                    y_pos = y_pos / 1000 / UNIT
+                    if x_pos < 0 or y_pos < 0:
+                        logger.warning("Drill position is possibly outside of bounds: x={0}, y={1}".format(x_pos, y_pos))
                     vias.append(
                         [
-                            float(match.group(1)) / 1000 / UNIT,
-                            float(match.group(2)) / 1000 / UNIT,
+                            x_pos, y_pos,
                             drills[current_drill],
                         ]
                     )
                 else:
                     logger.warning("Drill file parsing failed. Drill with specifed number wasn't found")
+                continue
     logger.debug("Found %d vias", len(vias))
     return vias
-
-
-def import_stackup():
-    """Import stackup information from `fab/stackup.json` file and load it into config object."""
-    filename = "fab/stackup.json"
-    with open(filename, "r", encoding="utf-8") as file:
-        try:
-            stackup = json.load(file)
-        except json.JSONDecodeError as error:
-            logger.error(
-                "JSON decoding failed at %d:%d: %s",
-                error.lineno,
-                error.colno,
-                error.msg,
-            )
-            sys.exit(1)
-        ver = stackup["format_version"]
-        if (
-            ver is not None
-            and ver.split(".")[0] == STACKUP_FORMAT_VERSION.split(".", maxsplit=1)[0]
-            and ver.split(".")[1] >= STACKUP_FORMAT_VERSION.split(".", maxsplit=1)[1]
-        ):
-            Config.get().load_stackup(stackup)
-        else:
-            logger.error(
-                "Stackup format (%s) is not supported (supported: %s)",
-                ver,
-                STACKUP_FORMAT_VERSION,
-            )
-            sys.exit()
-
 
 def import_port_positions() -> None:
     """Import port positions from PnP .csv files.
@@ -236,10 +259,11 @@ def import_port_positions() -> None:
     Looks for all PnP files in `fab` folder (files ending with `-pos.csv`)
     Parses them to find port footprints and inserts their position information to config object.
     """
+    config = Config.get()
     ports: List[Tuple[int, Tuple[float, float], float]] = []
-    for filename in os.listdir(os.path.join(os.getcwd(), "fab")):
+    for filename in os.listdir(config.dirs.input_dir):
         if filename.endswith("-pos.csv"):
-            ports += get_ports_from_file(os.path.join(os.getcwd(), "fab", filename))
+            ports += get_ports_from_file(os.path.join(config.dirs.input_dir, filename))
 
     for number, position, direction in ports:
         if len(Config.get().ports) > number:
@@ -263,13 +287,18 @@ def get_ports_from_file(filename: str) -> List[Tuple[int, Tuple[float, float], f
     with open(filename, "r", encoding="utf-8") as csvfile:
         reader = csv.reader(csvfile, delimiter=",", quotechar='"')
         next(reader, None)  # skip the headers
+        x_offset, y_offset = Config.get().x_offset, Config.get().y_offset
         for row in reader:
-            if "Simulation_Port" in row[2]:
+            if "Simulation_Port" in row[1]:
                 number = int(row[0][2:])
+                x = float(row[3])
+                y = float(row[4])
+                x = x - x_offset
+                y = y - y_offset
                 ports.append(
                     (
-                        number - 1,
-                        (float(row[3]) / 1000 / UNIT, float(row[4]) / 1000 / UNIT),
+                        number,
+                        (float(x) / 1000 / UNIT, float(y) / 1000 / UNIT),
                         float(row[5]),
                     )
                 )

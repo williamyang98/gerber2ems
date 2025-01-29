@@ -12,7 +12,6 @@ import shutil
 import coloredlogs
 import numpy as np
 
-from gerber2ems.constants import BASE_DIR, SIMULATION_DIR, GEOMETRY_DIR, RESULTS_DIR
 from gerber2ems.simulation import Simulation
 from gerber2ems.postprocess import Postprocesor
 from gerber2ems.config import Config
@@ -37,23 +36,35 @@ def main():
         logger.info('No steps selected. Exiting. To select steps use "-g", "-s", "-p", "-a" flags')
         sys.exit(0)
 
-    config = open_config(args)
-    config = Config(config, args)
-    create_dir(BASE_DIR)
+    config_json, config_filepath = open_config(args)
+    config = Config(config_json, args)
+    create_dir(config.dirs.output_dir)
+
+    sim = Simulation()
+
+    if args.all or args.geometry or args.simulate:
+        logger.info("Cloning config file")
+        shutil.copy(config_filepath, os.path.join(config.dirs.output_dir, "simulation.json"))
 
     if args.geometry or args.all:
         logger.info("Creating geometry")
-        create_dir(GEOMETRY_DIR, cleanup=True)
-        sim = Simulation()
+        create_dir(config.dirs.geometry_dir, cleanup=True)
+        importer.process_gbrs_to_pngs()
+        logger.info("Cloning fab output files")
+        create_dir(config.dirs.fab_dir, cleanup=True)
+        shutil.copytree(config.dirs.input_dir, config.dirs.fab_dir, dirs_exist_ok=True)
+
+    if args.geometry or args.simulate or args.postprocess or args.all:
+        logger.info("Saving geometry")
         geometry(sim)
+
     if args.simulate or args.all:
         logger.info("Running simulation")
-        create_dir(SIMULATION_DIR, cleanup=True)
+        create_dir(config.dirs.simulation_dir, cleanup=True)
         simulate(threads=args.threads)
     if args.postprocess or args.all:
         logger.info("Postprocessing")
-        create_dir(RESULTS_DIR, cleanup=True)
-        sim = Simulation()
+        create_dir(config.dirs.results_dir, cleanup=True)
         postprocess(sim)
 
 
@@ -77,19 +88,17 @@ def add_virtual_ports(sim: Simulation) -> None:
 
 def geometry(sim: Simulation) -> None:
     """Create a geometry for the simulation."""
-    importer.import_stackup()
-    importer.process_gbrs_to_pngs()
-
-    top_layer_name = Config.get().get_metals()[0].file
+    config = Config.get()
+    top_layer_name = config.get_metals()[0].file
     (width, height) = importer.get_dimensions(top_layer_name + ".png")
-    Config.get().pcb_height = height
-    Config.get().pcb_width = width
+    config.pcb_height = height
+    config.pcb_width = width
 
     sim.create_materials()
     sim.add_gerbers()
     sim.add_mesh()
     sim.add_substrates()
-    if Config.get().arguments.export_field:
+    if config.arguments.export_field:
         sim.add_dump_boxes()
     sim.set_boundary_conditions(pml=False)
     sim.add_vias()
@@ -99,17 +108,58 @@ def geometry(sim: Simulation) -> None:
 
 def simulate(threads: None | int = None) -> None:
     """Run the simulation."""
+    # for index, pair in enumerate(Config.get().diff_pairs):
+    #     if not pair.correct:
+    #         continue
+    #     logging.info(f"Simulating differential pair gaussian pulse index={index}, name={pair.name}")
+    #     logging.info(f"  P+ ({pair.start_p}->{pair.stop_p}), P- ({pair.start_n}->{pair.stop_n})")
+    #     sim = Simulation()
+    #     sim.create_materials()
+    #     sim.set_excitation()
+    #     # add ports
+    #     logger.info("Adding ports")
+    #     sim.ports = []
+    #     importer.import_port_positions()
+    #     ports = Config.get().ports
+    #     sim.add_msl_port(ports[pair.start_p], pair.start_p, True)
+    #     sim.add_msl_port(ports[pair.stop_p], pair.stop_p, False)
+    #     sim.add_msl_port(ports[pair.start_n], pair.start_n, True)
+    #     sim.add_msl_port(ports[pair.stop_n], pair.stop_n, False)
+
+    # regular simulation
     for index, port in enumerate(Config.get().ports):
         if port.excite:
             sim = Simulation()
-            importer.import_stackup()
             sim.create_materials()
             sim.set_excitation()
             logging.info("Simulating with excitation on port #%i", index)
             sim.load_geometry()
             add_ports(sim, index)
-            sim.run(index, threads=threads)
+            sim.run(f"{index}", threads=threads)
 
+    # time domain reflectivity
+    # for index, port in enumerate(Config.get().ports):
+    #     if port.excite:
+    #         logging.info("Simulating with excitation on port #%i for time domain reflectivity", index)
+    #         sim = Simulation()
+    #         sim.create_materials()
+    #         sim.set_step_excitation(Config.get().stop_frequency)
+    #         sim.load_geometry()
+    #         add_ports(sim, index)
+    #         sim.run(f"tdr_{index}", threads=threads)
+
+    # sinusoidal test
+    # for index, port in enumerate(Config.get().ports):
+    #     if port.excite:
+    #         freq = 20e9
+    #         # freq = Config.get().stop_frequency
+    #         logging.info("Simulating with excitation on port #%i at %f Hz for sinusoial", index, freq)
+    #         sim = Simulation()
+    #         sim.create_materials()
+    #         sim.set_sinus_excitation(freq)
+    #         sim.load_geometry()
+    #         add_ports(sim, index)
+    #         sim.run(f"freq_{index}_{freq}", threads=threads)
 
 def postprocess(sim: Simulation) -> None:
     """Postprocess data from the simulation."""
@@ -144,6 +194,8 @@ def parse_arguments() -> Any:
         description="This application allows to perform EM simulations for PCB's created with KiCAD",
     )
     parser.add_argument("-c", "--config", dest="config", metavar="CONFIG_FILE")
+    parser.add_argument("-i", "--input", dest="input", type=str, default="./fab")
+    parser.add_argument("-o", "--output", dest="output", type=str, default="./ems")
     parser.add_argument(
         "-g",
         "--geometry",
@@ -224,7 +276,7 @@ def open_config(args: Any) -> None:
     """Try to open and parse config as json."""
     file_name = args.config
     if file_name is None:  # If filename is not supplied fallback to default
-        file_name = "./simulation.json"
+        file_name = os.path.join(os.getcwd(), "simulation.json")
     file_name = os.path.abspath(file_name)
     if not os.path.isfile(file_name):
         logger.error("Config file doesn't exist: %s", file_name)
@@ -234,6 +286,7 @@ def open_config(args: Any) -> None:
         try:
             config = json.load(file)
         except json.JSONDecodeError as error:
+            logger.error(f"Failed to parse config file: {file_name}")
             logger.error(
                 "JSON decoding failed at %d:%d: %s",
                 error.lineno,
@@ -242,12 +295,12 @@ def open_config(args: Any) -> None:
             )
             sys.exit(1)
 
-    return config
+    return (config, file_name)
 
 
 def create_dir(path: str, cleanup: bool = False) -> None:
     """Create a directory if doesn't exist."""
-    directory_path = os.path.join(os.getcwd(), path)
+    directory_path = path
     if cleanup and os.path.exists(directory_path):
         shutil.rmtree(directory_path)
     if not os.path.exists(directory_path):

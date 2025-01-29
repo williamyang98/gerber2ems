@@ -4,13 +4,13 @@
         "start": 2e9,
         "stop": 20e9
     },
-    "max_steps": 1e4,
+    "max_steps": 100e3,
     "via": {
         "filling_epsilon": 1,
         "plating_thickness": 50
     },
     "mesh": {
-        "xy": 100,
+        "xy": 75,
         "inter_layers": 4,
         "margin": {
             "xy": 200,
@@ -18,13 +18,13 @@
         }
     },
     "margin": {
-        "xy": 3000,
-        "z": 3000
+        "xy": 300,
+        "z": 300
     },
     "ports": [
         {
             "width": 400,
-            "length": 1000,
+            "length": 400,
             "impedance": 50,
             "layer": 0,
             "plane": 1,
@@ -32,7 +32,7 @@
         },
         {
             "width": 400,
-            "length": 1000,
+            "length": 400,
             "impedance": 50,
             "layer": 0,
             "plane": 1,
@@ -40,11 +40,33 @@
         },
         {
             "width": 400,
-            "length": 1000,
+            "length": 400,
             "impedance": 50,
             "layer": 0,
             "plane": 1,
             "excite": false
+        }
+    ],
+	"layers": [
+        {
+            "name": "F.Cu",
+            "type": "copper",
+            "thickness": 0.035,
+			"export_field": true
+        },
+        {
+            "name": "dielectric 1",
+            "type": "core",
+            "thickness": 0.2,
+            "material": "FR4",
+            "epsilon": 4.5,
+            "lossTangent": 0.02,
+			"export_field": true
+        },
+        {
+            "name": "B.Cu",
+            "type": "copper",
+            "thickness": 0.035
         }
     ]
 }

@@ -4,7 +4,7 @@
         "start": 2e9,
         "stop": 10e9
     },
-    "max_steps": 8e4,
+    "max_steps": 80e3,
     "via": {
         "filling_epsilon": 1,
         "plating_thickness": 50
@@ -142,6 +142,28 @@
             "start_n": 8,
             "stop_n": 2,
             "name": "HDMI"
+        }
+    ],
+	"layers": [
+        {
+            "name": "F.Cu",
+            "type": "copper",
+            "thickness": 0.035,
+			"export_field": true
+        },
+        {
+            "name": "dielectric 1",
+            "type": "prepreg",
+            "thickness": 0.12,
+            "material": "PR2116",
+            "epsilon": 4.3,
+            "lossTangent": 0.02,
+			"export_field": true
+        },
+        {
+            "name": "In1.Cu",
+            "type": "copper",
+            "thickness": 0.035
         }
     ]
 }
