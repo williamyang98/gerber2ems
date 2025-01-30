@@ -41,9 +41,11 @@ Documentation can be found [here](https://williamyang98.github.io/gerber2ems/doc
 
 ### Visualising E-fields with Paraview
 https://github.com/user-attachments/assets/467630fa-eb7f-4268-b3ea-a0b4997c61ea
+
 *Simulation of differential pair*
 
 https://github.com/user-attachments/assets/b16ab520-ca9b-4d1a-9d2a-7e88ee9ce144
+
 *Simulation of differential pair over hatched ground plane*
 
 ## Useful links
