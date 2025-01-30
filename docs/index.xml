@@ -1012,9 +1012,7 @@ title="Copy code"
 &lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
 &lt;/button>
 &lt;/div>
-&lt;/div>
-&lt;h2>Viewing results&lt;span class="hx-absolute -hx-mt-20" id="viewing-results">&lt;/span>
-&lt;a href="#viewing-results" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2></description></item><item><title>Visualise results</title><link>https://williamyang98.github.io/gerber2ems/docs/visualise_results/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/visualise_results/</guid><description>
+&lt;/div></description></item><item><title>Visualise results</title><link>https://williamyang98.github.io/gerber2ems/docs/visualise_results/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/visualise_results/</guid><description>
 &lt;h2>Instructions&lt;span class="hx-absolute -hx-mt-20" id="instructions">&lt;/span>
 &lt;a href="#instructions" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;p>Run the simulation with post processing as shown &lt;a href="https://williamyang98.github.io/gerber2ems//docs/running
 " >here&lt;/a>.&lt;/p>
