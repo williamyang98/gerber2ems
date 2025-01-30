@@ -49,5 +49,3 @@ gerber2ems -g --threads 16
 ```bash {filename="Run simulation and export field data"}
 gerber2ems -g --export-field
 ```
-
-## Viewing results
