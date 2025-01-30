@@ -1,0 +1,1397 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>gerber2ems – Documentation</title><link>https://williamyang98.github.io/gerber2ems/docs/</link><description>Recent content in Documentation on gerber2ems</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="https://williamyang98.github.io/gerber2ems/docs/index.xml" rel="self" type="application/rss+xml"/><item><title>Installation</title><link>https://williamyang98.github.io/gerber2ems/docs/installation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/installation/</guid><description>
+&lt;h2>Download and installation&lt;span class="hx-absolute -hx-mt-20" id="download-and-installation">&lt;/span>
+&lt;a href="#download-and-installation" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;p>Following steps assume a bash shell (including git-bash).&lt;/p>
+&lt;div class="steps hx-ml-4 hx-mb-12 ltr:hx-border-l rtl:hx-border-r hx-border-gray-200 ltr:hx-pl-6 rtl:hx-pr-6 dark:hx-border-neutral-800 [counter-reset:step]">
+&lt;h3>Clone repository&lt;span class="hx-absolute -hx-mt-20" id="clone-repository">&lt;/span>
+&lt;a href="#clone-repository" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">1. Clone repository&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">git clone --recursive https://github.com/williamyang98/gerber2ems.git&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">2. Change directory to repository location&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> gerber2ems&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h3>Install openEMS and gerberv&lt;span class="hx-absolute -hx-mt-20" id="install-openems-and-gerberv">&lt;/span>
+&lt;a href="#install-openems-and-gerberv" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;h4>Windows&lt;span class="hx-absolute -hx-mt-20" id="windows">&lt;/span>
+&lt;a href="#windows" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h4>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Download binaries&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">./vendor/download.sh&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h4>Linux&lt;span class="hx-absolute -hx-mt-20" id="linux">&lt;/span>
+&lt;a href="#linux" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h4>&lt;ol>
+&lt;li>Install &lt;a href="https://docs.openems.de/install.html#linux" target="_blank" rel="noopener">openEMS for linux&lt;/a>.&lt;/li>
+&lt;li>Install &lt;a href="https://gerbv.github.io/#download" target="_blank" rel="noopener">gerbv for linux&lt;/a>.&lt;/li>
+&lt;/ol>
+&lt;h3>Setup Python virtual environment&lt;span class="hx-absolute -hx-mt-20" id="setup-python-virtual-environment">&lt;/span>
+&lt;a href="#setup-python-virtual-environment" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>Only python 3.10 and 3.11 are supported by openEMS.&lt;/p>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">1. Create virtual environment&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">python -m venv venv&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">2. Activate virtual environment&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">source&lt;/span> ./venv/Scripts/activate&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">3. Add openEMS and gerbv binaries to path (windows only)&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">source&lt;/span> ./vendor/update_path.sh&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h3>Install gerber2ems inside environment&lt;span class="hx-absolute -hx-mt-20" id="install-gerber2ems-inside-environment">&lt;/span>
+&lt;a href="#install-gerber2ems-inside-environment" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">1. Install gerber2ems&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">pip install -e .&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">2. Check if gerber2ems is installed&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -h&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h4>Windows&lt;span class="hx-absolute -hx-mt-20" id="windows-1">&lt;/span>
+&lt;a href="#windows-1" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h4>&lt;div class="hx-overflow-x-auto hx-mt-6 hx-flex hx-flex-col hx-rounded-lg hx-border hx-py-4 hx-px-4 contrast-more:hx-border-current contrast-more:dark:hx-border-current hx-border-amber-200 hx-bg-amber-100 hx-text-amber-900 dark:hx-border-amber-200/30 dark:hx-bg-amber-900/30 dark:hx-text-amber-200">
+&lt;p class="hx-flex hx-items-center hx-font-medium">&lt;svg height=16px class="hx-inline-block hx-align-middle hx-mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">&lt;path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>&lt;/svg>Warning&lt;/p>
+&lt;div class="hx-w-full hx-min-w-0 hx-leading-7">
+&lt;div class="hx-mt-6 hx-leading-7 first:hx-mt-0">&lt;p>To fix missing DLL errors make sure to add openEMS binaries to the path.&lt;/p>&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">source&lt;/span> ./vendor/update_path.sh&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h4>Linux&lt;span class="hx-absolute -hx-mt-20" id="linux-1">&lt;/span>
+&lt;a href="#linux-1" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h4>&lt;p>Follow the openEMS installation instructions for the python interface &lt;a href="https://docs.openems.de/python/install.html#linux" target="_blank" rel="noopener">here&lt;/a>.&lt;/p>
+&lt;h3>After use shut down Python environment&lt;span class="hx-absolute -hx-mt-20" id="after-use-shut-down-python-environment">&lt;/span>
+&lt;a href="#after-use-shut-down-python-environment" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">deactivate&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;h2>Use after setup&lt;span class="hx-absolute -hx-mt-20" id="use-after-setup">&lt;/span>
+&lt;a href="#use-after-setup" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;div class="steps hx-ml-4 hx-mb-12 ltr:hx-border-l rtl:hx-border-r hx-border-gray-200 ltr:hx-pl-6 rtl:hx-pr-6 dark:hx-border-neutral-800 [counter-reset:step]">
+&lt;h3>Activating environment&lt;span class="hx-absolute -hx-mt-20" id="activating-environment">&lt;/span>
+&lt;a href="#activating-environment" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Change directory to repository&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> gerber2ems&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Activate virtual environment&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">source&lt;/span> ./venv/Scripts/activate&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Add openEMS and gerberv binaries to path (Windows only)&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">source&lt;/span> ./vendor/update_path.sh&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h3>Running gerber2ems&lt;span class="hx-absolute -hx-mt-20" id="running-gerber2ems">&lt;/span>
+&lt;a href="#running-gerber2ems" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems &lt;span class="o">[&lt;/span>options&lt;span class="o">]&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h3>Deactivating environment&lt;span class="hx-absolute -hx-mt-20" id="deactivating-environment">&lt;/span>
+&lt;a href="#deactivating-environment" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">deactivate&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;/div></description></item><item><title>Exporting PCB</title><link>https://williamyang98.github.io/gerber2ems/docs/export_pcb/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/export_pcb/</guid><description>
+&lt;h2>Required files&lt;span class="hx-absolute -hx-mt-20" id="required-files">&lt;/span>
+&lt;a href="#required-files" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;p>These following files should be exported from your PCB design. This should be achievable from any PCB design software.&lt;/p>
+&lt;h3>Gerber files (*.gbr)&lt;span class="hx-absolute -hx-mt-20" id="gerber-files-gbr">&lt;/span>
+&lt;a href="#gerber-files-gbr" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;ul>
+&lt;li>Specified geometry for copper layers is added to simulation (*_Cu.gbr).&lt;/li>
+&lt;li>Edge cuts must be supplied (Edge_Cuts.gbr).&lt;/li>
+&lt;li>Must be referenced to drill/place file origin.&lt;/li>
+&lt;li>Uses the &lt;code>4.6, unit mm&lt;/code> coordinate format.&lt;/li>
+&lt;/ul>
+&lt;h3>Drill files (*.drl)&lt;span class="hx-absolute -hx-mt-20" id="drill-files-drl">&lt;/span>
+&lt;a href="#drill-files-drl" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;ul>
+&lt;li>Only plated through holes such as vias are added to simulation (PTH.drl).&lt;/li>
+&lt;li>Must be referenced to dill/place file origin.&lt;/li>
+&lt;li>Uses decimal format in millimeters.&lt;/li>
+&lt;li>Excellon file format in alternate drill mode.&lt;/li>
+&lt;/ul>
+&lt;h3>Ports file (*-pos.csv)&lt;span class="hx-absolute -hx-mt-20" id="ports-file--poscsv">&lt;/span>
+&lt;a href="#ports-file--poscsv" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;ul>
+&lt;li>Only specially marked simulation ports are imported into simulation.&lt;/li>
+&lt;li>Reference must be &amp;ldquo;SP{number}&amp;rdquo;.&lt;/li>
+&lt;li>Value must be &amp;ldquo;Simulation_Port&amp;rdquo;.&lt;/li>
+&lt;li>xy position:
+&lt;ul>
+&lt;li>Must be in millimeters.&lt;/li>
+&lt;li>Referenced to drill/place file origin.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Only rotations of &lt;code>[0, 90, 180, 270]&lt;/code> are allowed.&lt;/li>
+&lt;li>File must be in &lt;code>csv&lt;/code> format where first row is the header.&lt;/li>
+&lt;li>Order of values is given in the following table.&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Ref&lt;/th>
+&lt;th>Val&lt;/th>
+&lt;th>Package&lt;/th>
+&lt;th>PosX&lt;/th>
+&lt;th>PosY&lt;/th>
+&lt;th>Rot&lt;/th>
+&lt;th>Side&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>SP0&lt;/td>
+&lt;td>Simulation_Port&lt;/td>
+&lt;td>*&lt;/td>
+&lt;td>0.4&lt;/td>
+&lt;td>2.5&lt;/td>
+&lt;td>*&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>SP1&lt;/td>
+&lt;td>Simulation_Port&lt;/td>
+&lt;td>*&lt;/td>
+&lt;td>0.6&lt;/td>
+&lt;td>2.5&lt;/td>
+&lt;td>*&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2>Exporting from KiCAD 8.0&lt;span class="hx-absolute -hx-mt-20" id="exporting-from-kicad-80">&lt;/span>
+&lt;a href="#exporting-from-kicad-80" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;div class="steps hx-ml-4 hx-mb-12 ltr:hx-border-l rtl:hx-border-r hx-border-gray-200 ltr:hx-pl-6 rtl:hx-pr-6 dark:hx-border-neutral-800 [counter-reset:step]">
+&lt;h3>Creating simulation ports&lt;span class="hx-absolute -hx-mt-20" id="creating-simulation-ports">&lt;/span>
+&lt;a href="#creating-simulation-ports" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/kicad_simulation_port.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 5. KiCAD 8.0 simulation port properties&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;p>Check to see if a component on the board is setup correctly to be imported as a simulation port into openEMS.&lt;/p>
+&lt;ol>
+&lt;li>Select a footprint.&lt;/li>
+&lt;li>Select properties.&lt;/li>
+&lt;li>Check to see if the &lt;code>Reference&lt;/code> and &lt;code>Value&lt;/code> are set to &lt;code>SP{number}&lt;/code> and &lt;code>Simulation_Port&lt;/code> respectively.
+&lt;ul>
+&lt;li>This should be done in the KiCAD schematic file by editing the properties on the component.&lt;/li>
+&lt;li>You can create a library of simulation port cusotm footprints in KiCAD or reuse an inbuilt footprint.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Change orientation if port is the orientation after being imported.&lt;/li>
+&lt;li>Make sure that it is not excluded from the exported position files.&lt;/li>
+&lt;/ol>
+&lt;h3>Begin exporting files&lt;span class="hx-absolute -hx-mt-20" id="begin-exporting-files">&lt;/span>
+&lt;a href="#begin-exporting-files" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>Use the following menu to export each of the required file types.&lt;/p>
+&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="width: 50%">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/kicad_file_menu.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 1. KiCAD 8.0 file menu options for exporting design&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;h3>Export Gerber files&lt;span class="hx-absolute -hx-mt-20" id="export-gerber-files">&lt;/span>
+&lt;a href="#export-gerber-files" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/kicad_export_gerber.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 2. KiCAD 8.0 export Gerber files dialog&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;ol start="0">
+&lt;li>Select &lt;code>File &amp;gt; Fabrication Outputs &amp;gt; Gerbers (.gbr)...&lt;/code>.&lt;/li>
+&lt;li>Choose output folder.&lt;/li>
+&lt;li>Include layers that you want to export.&lt;/li>
+&lt;li>Setup options.&lt;/li>
+&lt;li>Press &lt;code>Plot&lt;/code> to export gerber files to output folder.&lt;/li>
+&lt;/ol>
+&lt;h3>Export drill files&lt;span class="hx-absolute -hx-mt-20" id="export-drill-files">&lt;/span>
+&lt;a href="#export-drill-files" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/kicad_export_drill.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 3. KiCAD 8.0 generate drill files dialog&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;ol start="0">
+&lt;li>Select &lt;code>Generate Drill Files...&lt;/code> from previous &lt;code>Gerber files&lt;/code> dialog box.&lt;/li>
+&lt;li>Choose output folder.&lt;/li>
+&lt;li>Setup options.&lt;/li>
+&lt;li>Press &lt;code>Generate Drill File&lt;/code> to export drill files to output folder.&lt;/li>
+&lt;/ol>
+&lt;h3>Export ports file&lt;span class="hx-absolute -hx-mt-20" id="export-ports-file">&lt;/span>
+&lt;a href="#export-ports-file" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/kicad_export_ports.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 4. KiCAD 8.0 generate placement files dialog&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;ol start="0">
+&lt;li>Select &lt;code>File &amp;gt; Fabrication Outputs &amp;gt; Component Placement (.pos, .gbr)...&lt;/code>.&lt;/li>
+&lt;li>Choose output folder.&lt;/li>
+&lt;li>Setup options.&lt;/li>
+&lt;li>Press &lt;code>Generate Position File&lt;/code> to export ports to output folder.&lt;/li>
+&lt;/ol>
+&lt;/div></description></item><item><title>Configuration</title><link>https://williamyang98.github.io/gerber2ems/docs/configuration/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/configuration/</guid><description>
+&lt;p>A single simulation configuration file in &lt;code>JSON&lt;/code> is required to for gerber2ems.&lt;/p>
+&lt;p>An example of a configuration file can be found here: &lt;a href="https://github.com/williamyang98/gerber2ems/blob/main/examples/differential_hatched/simulation.json" target="_blank" rel="noopener">simulation.json&lt;/a>&lt;/p>
+&lt;h2>Signal properties&lt;span class="hx-absolute -hx-mt-20" id="signal-properties">&lt;/span>
+&lt;a href="#signal-properties" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Field&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Default&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>frequency.start&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>0.5e6&lt;/td>
+&lt;td>Start frequency of Gaussian pulse in Hz&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>frequency.stop&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>10e6&lt;/td>
+&lt;td>Stop frequency of Gaussian pulse in Hz&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2>Simulation settings&lt;span class="hx-absolute -hx-mt-20" id="simulation-settings">&lt;/span>
+&lt;a href="#simulation-settings" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Field&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Default&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>max_steps&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>None&lt;/td>
+&lt;td>Maximum number of simulation time steps. If nothing is provided then simulation continues until total energy in system approaches -60dB.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>margin.xy&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>3000&lt;/td>
+&lt;td>Distance of air gap around x and y axis in microns&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>margin.z&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>3000&lt;/td>
+&lt;td>Distance of air gap around z axis in microns&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>offset.x&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>0&lt;/td>
+&lt;td>Distance to offset port locations along x axis in millimeters&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>offset.y&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>0&lt;/td>
+&lt;td>Distance to offset port locations along y axis in millimeters&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2>Via properties&lt;span class="hx-absolute -hx-mt-20" id="via-properties">&lt;/span>
+&lt;a href="#via-properties" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Field&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Default&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>via.filling_epsilon&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>1&lt;/td>
+&lt;td>Dielectric constant of dielectric material that fills vias&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>via.plating_thickness&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>50&lt;/td>
+&lt;td>Thickness of via electro-deposited coating in microns&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2>PCB mesh properties&lt;span class="hx-absolute -hx-mt-20" id="pcb-mesh-properties">&lt;/span>
+&lt;a href="#pcb-mesh-properties" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Field&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Default&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>mesh&lt;/td>
+&lt;td>object&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>mesh.xy&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>200&lt;/td>
+&lt;td>Distance between mesh lines along x and y axis for PCB in microns&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>mesh.inter_layers&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>5&lt;/td>
+&lt;td>Number of default mesh lines along z axis for PCB in microns&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>mesh.smoothing_ratio&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>2&lt;/td>
+&lt;td>Factor to ease between differently spaced mesh lines&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>mesh.margin.xy&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>200&lt;/td>
+&lt;td>Distance in microns from x and y axis to add a mesh line&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>mesh.margin.z&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>200&lt;/td>
+&lt;td>Distance in microns from z axis to add a mesh line&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2>Configuring nanomesh&lt;span class="hx-absolute -hx-mt-20" id="configuring-nanomesh">&lt;/span>
+&lt;a href="#configuring-nanomesh" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;ul>
+&lt;li>Nanomesh is the python package that converts image files into a mesh to import into &lt;code>openEMS&lt;/code>.&lt;/li>
+&lt;li>Image files are generated by &lt;code>gerbv&lt;/code> from Gerber files.&lt;/li>
+&lt;li>Done since we cannot directly convert Gerber files into mesh data.&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Field&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Default&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>nanomesh&lt;/td>
+&lt;td>object&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>nanomesh.quality&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>5&lt;/td>
+&lt;td>Higher number means higher density mesh&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>nanomesh.max_triangle_area&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>10000&lt;/td>
+&lt;td>Maximum area for a triangle in the mesh in pixels&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>nanomesh.min_spacing&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>0.1&lt;/td>
+&lt;td>Minimum distance in millimeters where two regions in the image can be considered separate. Reduce this value if you notice bridging of traces in the final mesh output.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>nanomesh.max_edge_distance&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>10000&lt;/td>
+&lt;td>Maximum distance of a triangle edge in pixels&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2>Simulation ports&lt;span class="hx-absolute -hx-mt-20" id="simulation-ports">&lt;/span>
+&lt;a href="#simulation-ports" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;ul>
+&lt;li>Define list of simulation ports.&lt;/li>
+&lt;li>Simulation ports are labelled &lt;code>SP{number}&lt;/code> in exported component placement file &lt;code>(*-pos.csv)&lt;/code>.&lt;/li>
+&lt;li>The index of the port (starting from 0) in this list corresponds to the exported simulation port.&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Field&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Default&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>ports&lt;/td>
+&lt;td>list&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ports.name&lt;/td>
+&lt;td>str&lt;/td>
+&lt;td>&amp;ldquo;Unnamed&amp;rdquo;&lt;/td>
+&lt;td>Name of port&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ports.width&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Width of port in microns&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ports.length&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Length of port in microns&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ports.impedance&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>50&lt;/td>
+&lt;td>Impedance of simulation port in ohms&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ports.layer&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Metal layer starting from top down where signal trace is (0 indexed)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ports.plane&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Metal layer starting from top down where reference plane is (0 indexed)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ports.excite&lt;/td>
+&lt;td>bool&lt;/td>
+&lt;td>false&lt;/td>
+&lt;td>Should the port be simulated with an excitation pulse?&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>ports.dB_margin&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>-15&lt;/td>
+&lt;td>S11 margin of port in decibels&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2>Differential pairs&lt;span class="hx-absolute -hx-mt-20" id="differential-pairs">&lt;/span>
+&lt;a href="#differential-pairs" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;ul>
+&lt;li>Define list of differential pairs based on pairs of two simulation ports.&lt;/li>
+&lt;li>Automatically calculate and generate graphs for that differential pair.&lt;/li>
+&lt;li>All simulation port indices start from 0.&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Field&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Default&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>differential_pairs&lt;/td>
+&lt;td>list&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>differential_pairs.name&lt;/td>
+&lt;td>str&lt;/td>
+&lt;td>&amp;ldquo;{start_p}{stop_p}{start_n}{stop_n}&amp;rdquo;&lt;/td>
+&lt;td>Name of differential pair&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>differential_pairs.start_p&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Index of simulation port for start of positive trace&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>differential_pairs.stop_p&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Index of simulation port for end of positive trace&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>differential_pairs.start_n&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Index of simulation port for start of negative trace&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>differential_pairs.stop_n&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Index of simulation port for end of negative trace&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2>Signal traces&lt;span class="hx-absolute -hx-mt-20" id="signal-traces">&lt;/span>
+&lt;a href="#signal-traces" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;ul>
+&lt;li>Define list of signal traces based on two simulation ports.&lt;/li>
+&lt;li>Automatically calculate and generate graphs for that signal trace.&lt;/li>
+&lt;li>All simulation port indices start from 0.&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Field&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Default&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>traces&lt;/td>
+&lt;td>list&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>traces.name&lt;/td>
+&lt;td>str&lt;/td>
+&lt;td>&amp;ldquo;{start}{stop}&amp;rdquo;&lt;/td>
+&lt;td>Name of signal trace&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>traces.start&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Index of simulation port for start of trace&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>traces.stop&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Index of simulation port for end of trace&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2>Stackup layers&lt;span class="hx-absolute -hx-mt-20" id="stackup-layers">&lt;/span>
+&lt;a href="#stackup-layers" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;ul>
+&lt;li>Define list of layers that make up the PCB stackup.&lt;/li>
+&lt;li>Includes copper and dielectric layers.&lt;/li>
+&lt;/ul>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Field&lt;/th>
+&lt;th>Type&lt;/th>
+&lt;th>Default&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>layers&lt;/td>
+&lt;td>list&lt;/td>
+&lt;td>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>layers.name&lt;/td>
+&lt;td>str&lt;/td>
+&lt;td>None&lt;/td>
+&lt;td>Name of layer&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>layers.type&lt;/td>
+&lt;td>str&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Type of layer: &lt;code>[copper, core]&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>layers.file&lt;/td>
+&lt;td>str&lt;/td>
+&lt;td>None&lt;/td>
+&lt;td>Name of Gerber file without extension and prefix (&lt;code>*-{name}.gbr&lt;/code>)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>layers.thickness&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>0&lt;/td>
+&lt;td>Thickness of layer in millimeters&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>layers.export_field&lt;/td>
+&lt;td>bool&lt;/td>
+&lt;td>false&lt;/td>
+&lt;td>Export field if &lt;code>--export-field&lt;/code> was provided to &lt;code>gerber2ems&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>layers.z_mesh_count&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>None&lt;/td>
+&lt;td>Override the default number of z-mesh lines to add to layer&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>layers.epsilon&lt;/td>
+&lt;td>float&lt;/td>
+&lt;td>&lt;strong>Required&lt;/strong>&lt;/td>
+&lt;td>Dielectric constant required for dielectric layers&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>layers.priority&lt;/td>
+&lt;td>int&lt;/td>
+&lt;td>&lt;a href="#default-material-priorities" >Defaults&lt;/a>&lt;/td>
+&lt;td>Priority of layer (higher priorities override lower priorities). By default metal layers have higher priority and override dielectric layers.&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3>Default material priorities&lt;span class="hx-absolute -hx-mt-20" id="default-material-priorities">&lt;/span>
+&lt;a href="#default-material-priorities" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>Higher priority means it overrides lower priority materials.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Name&lt;/th>
+&lt;th>Priority&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Simulation port&lt;/td>
+&lt;td>200&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Via dielectric&lt;/td>
+&lt;td>101&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Via metal&lt;/td>
+&lt;td>100&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Metal layer&lt;/td>
+&lt;td>51&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Dielectric layer&lt;/td>
+&lt;td>50&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>Running simulation</title><link>https://williamyang98.github.io/gerber2ems/docs/running/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/running/</guid><description>
+&lt;div class="hx-overflow-x-auto hx-mt-6 hx-flex hx-flex-col hx-rounded-lg hx-border hx-py-4 hx-px-4 contrast-more:hx-border-current contrast-more:dark:hx-border-current hx-border-indigo-200 hx-bg-indigo-100 hx-text-indigo-900 dark:hx-border-indigo-200/30 dark:hx-bg-indigo-900/30 dark:hx-text-indigo-200">
+&lt;p class="hx-flex hx-items-center hx-font-medium">&lt;svg height=16px class="hx-inline-block hx-align-middle hx-mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>&lt;/svg>Important&lt;/p>
+&lt;div class="hx-w-full hx-min-w-0 hx-leading-7">
+&lt;div class="hx-mt-6 hx-leading-7 first:hx-mt-0">&lt;p>Make sure that you have initialised the virtual environment following &lt;a href="https://williamyang98.github.io/gerber2ems//docs/installation/#use-after-setup
+" >these instructions&lt;/a>.&lt;/p>&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;h2>Options&lt;span class="hx-absolute -hx-mt-20" id="options">&lt;/span>
+&lt;a href="#options" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;p>These are the arguments for &lt;code>gerber2ems&lt;/code>&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="width: 30%">Option&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-h&lt;/code>
+&lt;code class="cli_arg">--help&lt;/code>
+&lt;/td>
+&lt;td>
+Prints the help message.
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-c [file]&lt;/code>
+&lt;code class="cli_arg">--config [file]&lt;/code>
+&lt;/td>
+&lt;td>
+Specifies the location of the simulation configuration file.
+&lt;br>&lt;code class="cli_arg">default: ./simulation.json&lt;/code>
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-i [dir]&lt;/code>
+&lt;code class="cli_arg">--input [dir]&lt;/code>
+&lt;/td>
+&lt;td>
+Specifies the directory containing the exported Gerber, drill and simulation port files.
+&lt;br>&lt;code class="cli_arg">default: ./fab&lt;/code>
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-o [dir]&lt;/code>
+&lt;code class="cli_arg">--output [dir]&lt;/code>
+&lt;/td>
+&lt;td>
+Specifies the location of the: geometry data, simulation results, export E-fields, and post processed graphs.
+&lt;br>&lt;code class="cli_arg">default: ./ems&lt;/code>
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-g&lt;/code>
+&lt;code class="cli_arg">--geometry&lt;/code>
+&lt;/td>
+&lt;td>
+Flag to create geometry files for openEMS.
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-s&lt;/code>
+&lt;code class="cli_arg">--simulate&lt;/code>
+&lt;/td>
+&lt;td>
+Flag to run openEMS simulation.
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-p&lt;/code>
+&lt;code class="cli_arg">--postprocess&lt;/code>
+&lt;/td>
+&lt;td>
+Flag to process openEMS results into graphs.
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-a&lt;/code>
+&lt;code class="cli_arg">--all&lt;/code>
+&lt;/td>
+&lt;td>
+Flag to enable geometry, simulate and postprocess steps.
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">--ef&lt;/code>
+&lt;code class="cli_arg">--export-field&lt;/code>
+&lt;/td>
+&lt;td>
+Flag to enable exporting field data if specified in layer config.
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-t [threads]&lt;/code>
+&lt;code class="cli_arg">--threads [threads]&lt;/code>
+&lt;/td>
+&lt;td>
+Number of threads that openEMS simulation will use.
+&lt;br>&lt;code class="cli_arg">default: auto&lt;/code>
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-d&lt;/code>
+&lt;code class="cli_arg">--debug&lt;/code>
+&lt;/td>
+&lt;td>
+Flag to enable debug level logging output.
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-l [level]&lt;/code>
+&lt;code class="cli_arg">--log [level]&lt;/code>
+&lt;/td>
+&lt;td>
+Set logging level: &lt;code>[DEBUG, INFO, WARNING, ERROR]&lt;/code>.
+&lt;br>&lt;code class="cli_arg">default: INFO&lt;/code>
+&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2>Examples&lt;span class="hx-absolute -hx-mt-20" id="examples">&lt;/span>
+&lt;a href="#examples" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;p>Consider an example where our directory has:&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>./fab&lt;/code> generated by KiCAD 8.0 according to &lt;a href="https://williamyang98.github.io/gerber2ems//docs/export_pcb/#exporting-from-kicad-80
+" >these settings&lt;/a>.&lt;/li>
+&lt;li>&lt;code>./simulation.json&lt;/code> written according to &lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration
+" >these guidelines&lt;/a>.&lt;/li>
+&lt;li>Virtual environment has been activated according to &lt;a href="https://williamyang98.github.io/gerber2ems//docs/installation/#use-after-setup
+" >these instructions&lt;/a>.&lt;/li>
+&lt;li>bash shell is already inside this directory.&lt;/li>
+&lt;/ul>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Run simulation and output to default location&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -a&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Run simulation and input/output from custom locations&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -c &lt;span class="s2">&amp;#34;custom_simulation.json&amp;#34;&lt;/span> -i &lt;span class="s2">&amp;#34;custom_fab/&amp;#34;&lt;/span> -o &lt;span class="s2">&amp;#34;custom_results/&amp;#34;&lt;/span> -a&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Run geometry pass only&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -g&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Run simulation pass only&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -s&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Run postprocessing pass only&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -p&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Run simulation with custom number of threads&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -g --threads &lt;span class="m">16&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Run simulation and export field data&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -g --export-field&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h2>Viewing results&lt;span class="hx-absolute -hx-mt-20" id="viewing-results">&lt;/span>
+&lt;a href="#viewing-results" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2></description></item><item><title>Visualise results</title><link>https://williamyang98.github.io/gerber2ems/docs/visualise_results/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/visualise_results/</guid><description>
+&lt;h2>Instructions&lt;span class="hx-absolute -hx-mt-20" id="instructions">&lt;/span>
+&lt;a href="#instructions" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;p>Run the simulation with post processing as shown &lt;a href="https://williamyang98.github.io/gerber2ems//docs/running
+" >here&lt;/a>.&lt;/p>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Run simulation and output to default location&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -a&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;ul>
+&lt;li>Results of post processing should be stored in &lt;code>ems/results/*.png&lt;/code>.&lt;/li>
+&lt;li>The &lt;code>ems&lt;/code> folder is controlled by the &lt;code>--output&lt;/code> argument to &lt;code>gerbv&lt;/code> which is &lt;a href="https://williamyang98.github.io/gerber2ems//docs/running/#options
+" >explained here&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h2>Post processed results&lt;span class="hx-absolute -hx-mt-20" id="post-processed-results">&lt;/span>
+&lt;a href="#post-processed-results" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;ul>
+&lt;li>S parameters are calculated for all excited ports.&lt;/li>
+&lt;li>Impedance of signal trace or differential pair is calculated.&lt;/li>
+&lt;/ul>
+&lt;h3>Propagation delay&lt;span class="hx-absolute -hx-mt-20" id="propagation-delay">&lt;/span>
+&lt;a href="#propagation-delay" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/results_A_delay.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 7. Propagation delay of differential pairs&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;h3>S-parameters&lt;span class="hx-absolute -hx-mt-20" id="s-parameters">&lt;/span>
+&lt;a href="#s-parameters" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/results_S_x1.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 8. S parameters for port 1&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/results_S_x3.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 9. S parameters for port 3&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/results_S_11_smith.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 10. Smith chart for S11 parameter&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/results_S_33_smith.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 10. Smith chart for S33 parameter&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/results_SDD_A.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 11. Differential pair S parameters&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;/p>
+&lt;h3>Characteristic impedance&lt;span class="hx-absolute -hx-mt-20" id="characteristic-impedance">&lt;/span>
+&lt;a href="#characteristic-impedance" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/results_Z_1.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 12. Impedance of differential pair trace 1&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/results_Z_3.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 13. Impedance of differential pair trace 3&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/results_Z_diff_A.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 14. Combined impedance of differential pair&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;/p></description></item><item><title>Visualise geometry</title><link>https://williamyang98.github.io/gerber2ems/docs/visualise_geometry/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/visualise_geometry/</guid><description>
+&lt;ul>
+&lt;li>Geometry data can be visualised with &lt;code>AppCSXCad&lt;/code> which should come pre-installed with &lt;code>openEMS&lt;/code>.&lt;/li>
+&lt;li>This is especially useful for confirming whether or not simulation ports are placed correctly.
+&lt;ul>
+&lt;li>To correct for undesired offsets in the simulation port location adjust the &lt;code>offset.x&lt;/code> and &lt;code>offset.y&lt;/code> values in the configuration file as &lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#simulation-settings
+" >explained here&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;div class="hx-overflow-x-auto hx-mt-6 hx-flex hx-flex-col hx-rounded-lg hx-border hx-py-4 hx-px-4 contrast-more:hx-border-current contrast-more:dark:hx-border-current hx-border-indigo-200 hx-bg-indigo-100 hx-text-indigo-900 dark:hx-border-indigo-200/30 dark:hx-bg-indigo-900/30 dark:hx-text-indigo-200">
+&lt;p class="hx-flex hx-items-center hx-font-medium">&lt;svg height=16px class="hx-inline-block hx-align-middle hx-mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>&lt;/svg>Important&lt;/p>
+&lt;div class="hx-w-full hx-min-w-0 hx-leading-7">
+&lt;div class="hx-mt-6 hx-leading-7 first:hx-mt-0">&lt;p>Make sure that you have initialised the virtual environment following &lt;a href="https://williamyang98.github.io/gerber2ems//docs/installation/#use-after-setup
+" >these instructions&lt;/a>.&lt;/p>&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="steps hx-ml-4 hx-mb-12 ltr:hx-border-l rtl:hx-border-r hx-border-gray-200 ltr:hx-pl-6 rtl:hx-pr-6 dark:hx-border-neutral-800 [counter-reset:step]">
+&lt;h3>Generate your geometry file with gerber2ems.&lt;span class="hx-absolute -hx-mt-20" id="generate-your-geometry-file-with-gerber2ems">&lt;/span>
+&lt;a href="#generate-your-geometry-file-with-gerber2ems" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems --geometry&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h3>Start AppCSXCad as a bash job.&lt;span class="hx-absolute -hx-mt-20" id="start-appcsxcad-as-a-bash-job">&lt;/span>
+&lt;a href="#start-appcsxcad-as-a-bash-job" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">AppCSXCad.exe &lt;span class="p">&amp;amp;&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h3>Open generated geometry file&lt;span class="hx-absolute -hx-mt-20" id="open-generated-geometry-file">&lt;/span>
+&lt;a href="#open-generated-geometry-file" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>Click &lt;code>File &amp;gt; Load&lt;/code> and select &lt;code>./ems/geometry/geometry.xml&lt;/code> in the dialog box.&lt;/p>
+&lt;h3>View geometry file&lt;span class="hx-absolute -hx-mt-20" id="view-geometry-file">&lt;/span>
+&lt;a href="#view-geometry-file" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;ul>
+&lt;li>Enable/disable visiblity on specific layers.&lt;/li>
+&lt;li>Change to 2D or 3D views.&lt;/li>
+&lt;li>Snap to different planes: &lt;code>[xy, xz, yz]&lt;/code>.&lt;/li>
+&lt;li>Use &lt;code>MIDDLE_MOUSE&lt;/code> to pan.&lt;/li>
+&lt;li>Use &lt;code>LEFT_MOUSE&lt;/code> to orbit.&lt;/li>
+&lt;li>Use &lt;code>RIGHT_MOUSE&lt;/code> to zoom.&lt;/li>
+&lt;/ul>
+&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/appcxcad_usage.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;div class="hx-text-center hx-my-2">
+&lt;i>Figure 6. AppCSXCad screenshot&lt;/i>
+&lt;/div>
+&lt;/div>
+&lt;/div></description></item><item><title>Visualise fields</title><link>https://williamyang98.github.io/gerber2ems/docs/visualise_fields/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/visualise_fields/</guid><description>
+&lt;p>E-field data can be visualised with &lt;a href="https://www.paraview.org/" target="_blank" rel="noopener">ParaView&lt;/a> which is data visualisation software.&lt;/p>
+&lt;h2>Instructions&lt;span class="hx-absolute -hx-mt-20" id="instructions">&lt;/span>
+&lt;a href="#instructions" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;div class="hx-overflow-x-auto hx-mt-6 hx-flex hx-flex-col hx-rounded-lg hx-border hx-py-4 hx-px-4 contrast-more:hx-border-current contrast-more:dark:hx-border-current hx-border-indigo-200 hx-bg-indigo-100 hx-text-indigo-900 dark:hx-border-indigo-200/30 dark:hx-bg-indigo-900/30 dark:hx-text-indigo-200">
+&lt;p class="hx-flex hx-items-center hx-font-medium">&lt;svg height=16px class="hx-inline-block hx-align-middle hx-mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>&lt;/svg>Important&lt;/p>
+&lt;div class="hx-w-full hx-min-w-0 hx-leading-7">
+&lt;div class="hx-mt-6 hx-leading-7 first:hx-mt-0">&lt;p>Make sure that you have initialised the virtual environment following &lt;a href="https://williamyang98.github.io/gerber2ems//docs/installation/#use-after-setup
+" >these instructions&lt;/a>.&lt;/p>&lt;/div>
+&lt;/div>
+&lt;/div>
+&lt;div class="steps hx-ml-4 hx-mb-12 ltr:hx-border-l rtl:hx-border-r hx-border-gray-200 ltr:hx-pl-6 rtl:hx-pr-6 dark:hx-border-neutral-800 [counter-reset:step]">
+&lt;h3>Setup configuration&lt;span class="hx-absolute -hx-mt-20" id="setup-configuration">&lt;/span>
+&lt;a href="#setup-configuration" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>Make sure that your &lt;code>simulation.json&lt;/code> configuration file has &lt;code>layers.export_field&lt;/code> set to &lt;code>true&lt;/code> for your desired layers as shown &lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#stackup-layers" target="_blank" rel="noopener">here&lt;/a>.&lt;/p>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">&lt;a class="hx-no-underline hx-inline-flex hx-items-center hx-gap-1" href="https://github.com/williamyang98/gerber2ems/blob/main/examples/differential/simulation.json" target="_blank" rel="noopener noreferrer">
+&lt;span>examples/differential/simulation.json&lt;/span>&lt;svg height=1em xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">&lt;path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>&lt;/svg>&lt;/a>&lt;/div>&lt;div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;span class="lnt">81
+&lt;/span>&lt;span class="lnt">82
+&lt;/span>&lt;span class="lnt">83
+&lt;/span>&lt;span class="lnt">84
+&lt;/span>&lt;span class="lnt">85
+&lt;/span>&lt;span class="lnt">86
+&lt;/span>&lt;span class="lnt">87
+&lt;/span>&lt;span class="lnt">88
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl"> &lt;span class="s2">&amp;#34;layers&amp;#34;&lt;/span>&lt;span class="err">:&lt;/span> &lt;span class="p">[&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;F.Cu&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;file&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;F_Cu&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;copper&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;thickness&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mf">0.035&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;export_field&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;Dielectric 1&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;core&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;thickness&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mf">0.4&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;epsilon&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mf">4.6&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;export_field&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;B.Cu&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;file&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;B_Cu&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;copper&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;thickness&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mf">0.035&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">]&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h3>Run simulate with E-field export&lt;span class="hx-absolute -hx-mt-20" id="run-simulate-with-e-field-export">&lt;/span>
+&lt;a href="#run-simulate-with-e-field-export" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems --simulate --export-field&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h3>Open Paraview&lt;span class="hx-absolute -hx-mt-20" id="open-paraview">&lt;/span>
+&lt;a href="#open-paraview" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>Download and open ParaView from &lt;a href="https://www.paraview.org/download/" target="_blank" rel="noopener">here&lt;/a>.&lt;/p>
+&lt;h3>Load E-field data&lt;span class="hx-absolute -hx-mt-20" id="load-e-field-data">&lt;/span>
+&lt;a href="#load-e-field-data" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/paraview_1_open_file.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;/div>
+&lt;ol>
+&lt;li>Find &lt;code>Pipeline Browser&lt;/code> window.&lt;/li>
+&lt;li>Right click inside it and click on &lt;code>Open&lt;/code> in the context menu.&lt;/li>
+&lt;li>Navigate to the location of your simulation data.
+&lt;ul>
+&lt;li>By default it is &lt;code>ems/simulation/{number}&lt;/code>&lt;/li>
+&lt;li>&lt;code>{number}&lt;/code> is the simulation port index which had an excitation pulse.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Select the E-field group data.
+&lt;ul>
+&lt;li>openEMS generates E-field data in the format of &lt;code>e_field_{index}_{timestep}&lt;/code>&lt;/li>
+&lt;li>&lt;code>{index}&lt;/code> is the index of the layer in your configuration file which had &lt;code>export_field: true&lt;/code>.&lt;/li>
+&lt;li>&lt;code>{timestep}&lt;/code> is the timestep in the openEMS simulation when the E-field was recorded.&lt;/li>
+&lt;li>Paraview can load the data as a group for a given &lt;code>{index}&lt;/code>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Press &lt;code>Ok&lt;/code> to confirm selection.&lt;/li>
+&lt;/ol>
+&lt;h3>View E-field data&lt;span class="hx-absolute -hx-mt-20" id="view-e-field-data">&lt;/span>
+&lt;a href="#view-e-field-data" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/paraview_2_view_e_field.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;/div>
+&lt;ol>
+&lt;li>Toggle E-field visibility by clicking on the eyeball.&lt;/li>
+&lt;li>In the &lt;code>Properties&lt;/code> window under the &lt;code>Coloring&lt;/code> section select &lt;code>E-field&lt;/code> as your colour source.&lt;/li>
+&lt;li>Select the axis/magnitude of the E-field to view: &lt;code>[Magnitude, X, Y, Z]&lt;/code>.&lt;/li>
+&lt;/ol>
+&lt;h3>Set range to render data&lt;span class="hx-absolute -hx-mt-20" id="set-range-to-render-data">&lt;/span>
+&lt;a href="#set-range-to-render-data" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/paraview_3_set_range.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;/div>
+&lt;ol>
+&lt;li>
+&lt;p>There are three buttons to update the visualisation range.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Method&lt;/th>
+&lt;th>Use case&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Auto range to current timestep&lt;/td>
+&lt;td>Visualise data in full range to debug a single time step&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Custom range&lt;/td>
+&lt;td>Manually set 0 as the centre of the range once minimum and maximum values were found through auto ranging&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Auto range to all timesteps&lt;/td>
+&lt;td>Reliably visualise the data range across all time steps&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;/li>
+&lt;li>
+&lt;p>If scaling manually input values into the dialog box and press &lt;code>Ok&lt;/code> to apply new scale values.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h3>Select colour map&lt;span class="hx-absolute -hx-mt-20" id="select-colour-map">&lt;/span>
+&lt;a href="#select-colour-map" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/paraview_4_colour_map.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;/div>
+&lt;ol>
+&lt;li>Select colour map button.&lt;/li>
+&lt;li>In the colour map presets window select a colour map.
+&lt;ul>
+&lt;li>If you are visualising the &lt;code>[X,Y,Z]&lt;/code> axes choosing a colour map with white in the middle is nicer. This is because the data will contain positive and negative values, where the zero point should be the middle of the colour map (white).&lt;/li>
+&lt;li>If you are visualising the &lt;code>Magnitude&lt;/code> selecting a colour map that is zeroed to the lowest value is better.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Select &lt;code>Apply&lt;/code> to apply colour map.&lt;/li>
+&lt;/ol>
+&lt;h3>Playing back timesteps&lt;span class="hx-absolute -hx-mt-20" id="playing-back-timesteps">&lt;/span>
+&lt;a href="#playing-back-timesteps" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/paraview_5_playback.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;/div>
+&lt;ol>
+&lt;li>Press the play button to begin replaying simulation data.&lt;/li>
+&lt;li>Manually set the time step index to visualise a specific timestep.&lt;/li>
+&lt;li>Go back and &lt;a href="#set-range-to-render-data" >update the range&lt;/a> if the colours are faded or overblown.&lt;/li>
+&lt;/ol>
+&lt;h3>Visualise copper layer&lt;span class="hx-absolute -hx-mt-20" id="visualise-copper-layer">&lt;/span>
+&lt;a href="#visualise-copper-layer" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;img loading="lazy" decoding="async" src="https://williamyang98.github.io/gerber2ems//images/paraview_6_add_copper.png" style="margin-top: 0rem; margin-bottom: 0rem"/>
+&lt;/div>
+&lt;p>Visualising the copper layer greatly enhances interpretability of E-field data.&lt;/p>
+&lt;ol>
+&lt;li>Load image file of the layer from &lt;code>ems/geometry/*_Cu.png&lt;/code>.&lt;/li>
+&lt;li>Enable visibility.&lt;/li>
+&lt;li>Set a data spacing range of &lt;code>1e-5&lt;/code> to scale image down to size of E-field data.&lt;/li>
+&lt;li>Apply data spacing and visually check if copper layer matches the size of the E-field data.&lt;/li>
+&lt;li>Set the colour map to &lt;code>X-Ray&lt;/code> or another colour map that suits you.&lt;/li>
+&lt;li>Reduce the opacity so that the E-field data can be visualised through it.&lt;/li>
+&lt;li>Update the range of the visualisation so that the copper layer appears correctly.&lt;/li>
+&lt;/ol>
+&lt;/div>
+&lt;h2>Examples&lt;span class="hx-absolute -hx-mt-20" id="examples">&lt;/span>
+&lt;a href="#examples" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;h3>Differential pair&lt;span class="hx-absolute -hx-mt-20" id="differential-pair">&lt;/span>
+&lt;a href="#differential-pair" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;video
+width="100%" height="100%"
+autoplay
+loop
+controls
+>
+&lt;source src="https://williamyang98.github.io/gerber2ems/videos/paraview_differential.mp4" type="video/mp4">
+Your browser does not support the video tag
+&lt;/video>
+&lt;/div>
+&lt;div class="hx-rounded hx-border hx-inline-flex hx-flex-row hx-px-2 hx-py-1 hx-align-middle hx-shadow">
+&lt;a href="https://github.com/williamyang98/gerber2ems/tree/main/examples/differential" class="hx-inline-flex">
+&lt;div style="width: 1.5rem; height: 1.5rem; margin-right: 0.25rem">
+&lt;span class="hx-font-semibold hx-gap-2 hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-neutral-200 dark:hover:hx-text-neutral-50">
+&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>&lt;/svg>
+&lt;/span>
+&lt;/div>
+&lt;div>examples/differential&lt;/div>
+&lt;/a>
+&lt;/div>
+&lt;/p>
+&lt;h3>Differential pair over hatched plane&lt;span class="hx-absolute -hx-mt-20" id="differential-pair-over-hatched-plane">&lt;/span>
+&lt;a href="#differential-pair-over-hatched-plane" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>&lt;div class="hx-rounded hx-border hx-mb-4 hx-shadow" style="">
+&lt;video
+width="100%" height="100%"
+autoplay
+loop
+controls
+>
+&lt;source src="https://williamyang98.github.io/gerber2ems/videos/paraview_differential_hatched.mp4" type="video/mp4">
+Your browser does not support the video tag
+&lt;/video>
+&lt;/div>
+&lt;div class="hx-rounded hx-border hx-inline-flex hx-flex-row hx-px-2 hx-py-1 hx-align-middle hx-shadow">
+&lt;a href="https://github.com/williamyang98/gerber2ems/tree/main/examples/differential_hatched" class="hx-inline-flex">
+&lt;div style="width: 1.5rem; height: 1.5rem; margin-right: 0.25rem">
+&lt;span class="hx-font-semibold hx-gap-2 hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-neutral-200 dark:hover:hx-text-neutral-50">
+&lt;svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>&lt;/svg>
+&lt;/span>
+&lt;/div>
+&lt;div>examples/differential_hatched&lt;/div>
+&lt;/a>
+&lt;/div>
+&lt;/p></description></item></channel></rss>
