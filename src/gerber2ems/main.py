@@ -95,9 +95,8 @@ def geometry(sim: Simulation) -> None:
     config.pcb_width = width
 
     sim.create_materials()
-    sim.add_gerbers()
+    sim.add_layers()
     sim.add_mesh()
-    sim.add_substrates()
     if config.arguments.export_field:
         sim.add_dump_boxes()
     sim.set_boundary_conditions(pml=False)

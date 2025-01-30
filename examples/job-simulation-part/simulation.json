@@ -144,24 +144,24 @@
             "name": "HDMI"
         }
     ],
-	"layers": [
+    "layers": [
         {
             "name": "F.Cu",
+            "file": "F_Cu",
             "type": "copper",
             "thickness": 0.035,
-			"export_field": true
+            "export_field": true
         },
         {
-            "name": "dielectric 1",
-            "type": "prepreg",
+            "name": "Dielectric PR2116",
+            "type": "core",
             "thickness": 0.12,
-            "material": "PR2116",
             "epsilon": 4.3,
-            "lossTangent": 0.02,
-			"export_field": true
+            "export_field": true
         },
         {
             "name": "In1.Cu",
+            "file": "In1_Cu",
             "type": "copper",
             "thickness": 0.035
         }

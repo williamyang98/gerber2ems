@@ -49,22 +49,22 @@
     ],
 	"layers": [
         {
-            "name": "F.Cu",
+			"name": "F.Cu",
+			"file": "F_Cu",
             "type": "copper",
             "thickness": 0.035,
 			"export_field": true
         },
         {
-            "name": "dielectric 1",
+            "name": "Dielectric 1",
             "type": "core",
             "thickness": 0.2,
-            "material": "FR4",
             "epsilon": 4.5,
-            "lossTangent": 0.02,
 			"export_field": true
         },
         {
             "name": "B.Cu",
+			"file": "B_Cu",
             "type": "copper",
             "thickness": 0.035
         }

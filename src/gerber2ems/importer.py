@@ -13,6 +13,7 @@ import numpy as np
 from nanomesh import Image
 from nanomesh import Mesher2D
 import matplotlib.pyplot as plt
+import multiprocessing
 
 from gerber2ems.config import Config
 from gerber2ems.constants import (
@@ -44,14 +45,17 @@ def process_gbrs_to_pngs():
     if len(layers) == 0:
         logger.warning("No copper gerbers found")
 
+    args = []
     for name in layers:
         output = name.split("-")[-1].split(".")[0]
-        gbr_to_png(
+        args.append([
             os.path.join(config.dirs.input_dir, name),
             os.path.join(config.dirs.input_dir, edge),
             os.path.join(config.dirs.geometry_dir, output),
-        )
+        ])
 
+    with multiprocessing.Pool() as pool:
+        pool.starmap(gbr_to_png, args)
 
 def gbr_to_png(gerber_filename: str, edge_filename: str, output_filename: str) -> None:
     """Generate PNG from gerber file.
@@ -60,7 +64,7 @@ def gbr_to_png(gerber_filename: str, edge_filename: str, output_filename: str) -
     Edge cuts gerber is used to crop the image correctly.
     Output DPI is based on PIXEL_SIZE constant.
     """
-    logger.debug("Generating PNG for %s", gerber_filename)
+    logger.info("Generating PNG for %s", gerber_filename)
     not_cropped_name = f"{output_filename}_not_cropped.png"
 
     dpi = 1 / (PIXEL_SIZE * UNIT / 0.0254)
@@ -78,11 +82,10 @@ def gbr_to_png(gerber_filename: str, edge_filename: str, output_filename: str) -
 
     # image_width, image_height = not_cropped_image.size
     bbox = not_cropped_image.getbbox()
-    config = Config.get()
 
     # TODO: Figure out how to calculate cropped offset correctly so that
     #       config.x_offset and config.y_offset don't need to be specified manually
-    logger.warning(f"Gerber cropped: name='{gerber_filename}', specified_offset=({config.x_offset},{config.y_offset}), crop_bbox={bbox}")
+    # logger.warning(f"Gerber cropped: name='{gerber_filename}', specified_offset=({config.x_offset},{config.y_offset}), crop_bbox={bbox}")
     cropped_image = not_cropped_image.crop(bbox)
     cropped_image.save(f"{output_filename}.png")
     # if not Config.get().arguments.debug:

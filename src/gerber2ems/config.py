@@ -11,6 +11,12 @@ from gerber2ems.constants import CONFIG_FORMAT_VERSION, UNIT
 
 logger = logging.getLogger(__name__)
 
+class MaterialPriorityConfig:
+    def __init__(self) -> None:
+        self.simulation_port = 200
+        self.via_filling = 101
+        self.via_metal = 100
+
 class PortConfig:
     """Class representing and parsing port config."""
 
@@ -84,28 +90,25 @@ class LayerConfig:
 
     def __init__(self, config: Any) -> None:
         """Initialize LayerConfig based on passed json object."""
-        self.name = config.get("name", None)
-        self.kind = self.parse_kind(config["type"])
-        self.export_field = config.get("export_field", False)
-        self.z_mesh_count = config.get("z_mesh_count", None)
-        self.thickness = 0
-        if config["thickness"] is not None:
-            self.thickness = config["thickness"] / 1000 / UNIT
-        if self.kind == LayerKind.METAL:
-            self.file = config["name"].replace(".", "_")
-        elif self.kind == LayerKind.SUBSTRATE:
-            self.epsilon = config["epsilon"]
+        self.name = get(config, ["name"], str, "Unnamed")
+        self.kind = self.parse_kind(get(config, ["type"], str))
+        self.file = get(config, ["file"], str, "")
+        if self.file == "":
             self.file = None
-            self.duplicate_z = []
-            if "override" in config:
-                override = config["override"]
-                logging.debug(f"Overriding substrate with gerber file {override}")
-                self.file = override
-            if "duplicate_z" in config:
-                duplicate_z = config["duplicate_z"]
-                logging.debug(f"Duplicating substrate layer at offsets: {duplicate_z} mm")
-                self.duplicate_z = [z / 1000 / UNIT for z in duplicate_z]
-            self.priority_offset = config.get("priority_offset", None)
+        self.thickness = get(config, ["thickness"], (float, int), 0)
+        self.thickness = self.thickness / 1000 / UNIT
+        self.export_field = get(config, ["export_field"], bool, False)
+        self.z_mesh_count = get(config, ["z_mesh_count"], int, -1)
+        if self.z_mesh_count == -1:
+            self.z_mesh_count = None
+        if self.kind == LayerKind.SUBSTRATE:
+            self.epsilon = get(config, ["epsilon"], (float, int))
+            self.priority = get(config, ["priority"], int, 50)
+        elif self.kind == LayerKind.METAL:
+            self.priority = get(config, ["priority"], int, 51)
+
+        if self.kind == LayerKind.METAL and self.file == None:
+            logger.error(f"Metal layer name={self.name} has no Gerber file associated with it")
 
     def __repr__(self):
         """Get human-readable string describing layer."""
@@ -165,10 +168,10 @@ def get(
 
 class NanomeshConfig:
     def __init__(self, json: Any):
-        self.quality = int(get(json, ["nanomesh", "quality"], (int,), 5))
-        self.max_triangle_area = int(get(json, ["nanomesh", "max_triangle_area"], (int,), 10000))
-        self.min_spacing = float(get(json, ["nanomesh", "min_spacing"], (int, float), 0.5))
-        self.max_edge_distance = float(get(json, ["nanomesh", "max_edge_distance"], (int, float), 10000))
+        self.quality = int(get(json, ["nanomesh", "quality"], (int,), 6))
+        self.max_triangle_area = int(get(json, ["nanomesh", "max_triangle_area"], (int,), 100000))
+        self.min_spacing = float(get(json, ["nanomesh", "min_spacing"], (int, float), 0.05))
+        self.max_edge_distance = float(get(json, ["nanomesh", "max_edge_distance"], (int, float), 100000))
 
 class DirectoryConfig:
     def __init__(self, input_dir: str, output_dir: str):
@@ -254,6 +257,7 @@ class Config:
         self.load_layers(get(json, ["layers"], list, []))
 
         self.dirs = DirectoryConfig(args.input, args.output)
+        self.material_priorities = MaterialPriorityConfig()
 
         self.__class__._instance = self
 

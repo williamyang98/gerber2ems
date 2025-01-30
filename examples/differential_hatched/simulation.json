@@ -16,7 +16,7 @@
             "xy": 100,
             "z": 100
         },
-		"smoothing_ratio": 2
+        "smoothing_ratio": 2
     },
     "margin": {
         "xy": 400,
@@ -73,66 +73,58 @@
             "name": "A"
         }
     ],
-	"layers": [
-		{
-            "name": "Dielectric top",
+    "layers": [
+        {
+            "name": "Polyimide top",
             "type": "core",
             "thickness": 0.0125,
-            "material": "polyimide",
             "epsilon": 3.3,
-            "lossTangent": 0.01,
-			"z_mesh_count": 1
+            "z_mesh_count": 1
         },
-		{
+        {
             "name": "Adhesive top",
             "type": "core",
             "thickness": 0.015,
-            "material": "adhesive",
             "epsilon": 3.1,
-            "lossTangent": 0.01,
-			"z_mesh_count": 2
+            "z_mesh_count": 2
         },
         {
-            "name": "F_Cu",
+            "name": "F.Cu",
+            "file": "F_Cu",
             "type": "copper",
             "thickness": 0.012,
-			"export_field": true,
-			"z_mesh_count": 4
+            "export_field": true,
+            "z_mesh_count": 4
         },
         {
-            "name": "Core",
+            "name": "Polyimide core",
             "type": "core",
             "thickness": 0.025,
-            "material": "polyimide",
             "epsilon": 3.3,
-            "lossTangent": 0.01,
-			"export_field": true,
-			"z_mesh_count": 4
+            "export_field": true,
+            "z_mesh_count": 4
         },
         {
-            "name": "B_Cu",
+            "name": "B.Cu",
+            "file": "B_Cu",
             "type": "copper",
             "thickness": 0.012,
-			"export_field": true,
-			"z_mesh_count": 4
+            "export_field": true,
+            "z_mesh_count": 4
         },
-		{
+        {
             "name": "Adhesive bottom",
             "type": "core",
             "thickness": 0.015,
-            "material": "adhesive",
             "epsilon": 3.1,
-            "lossTangent": 0.01,
-			"z_mesh_count": 2
+            "z_mesh_count": 2
         },
-		{
-            "name": "Dielectric bottom",
+        {
+            "name": "Polyimide bottom",
             "type": "core",
             "thickness": 0.0125,
-            "material": "polyimide",
             "epsilon": 3.3,
-            "lossTangent": 0.01,
-			"z_mesh_count": 1
+            "z_mesh_count": 1
         }
     ]
 }

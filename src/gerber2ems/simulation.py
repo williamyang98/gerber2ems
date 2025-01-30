@@ -34,8 +34,8 @@ class Simulation:
         self.ports: List[openEMS.ports.MSLPort] = []
 
         # Separate metal materials for easier switching of layers
-        self.gerber_materials: List[Any] = []
-        self.substrate_materials: List[Any] = []
+        self.metal_materials: List[Any] = []
+        self.dielectric_materials: List[Any] = []
         self.plane_material = self.csx.AddMetal("Plane")
         self.port_material = self.csx.AddMetal("Port")
         self.via_material = self.csx.AddMetal("Via")
@@ -44,9 +44,9 @@ class Simulation:
     def create_materials(self) -> None:
         """Create materials required for simulation."""
         for i, _ in enumerate(Config.get().get_metals()):
-            self.gerber_materials.append(self.csx.AddMetal(f"Gerber_{i}"))
+            self.metal_materials.append(self.csx.AddMetal(f"Metal_{i}"))
         for i, layer in enumerate(Config.get().get_substrates()):
-            self.substrate_materials.append(self.csx.AddMaterial(f"Substrate_{i}", epsilon=layer.epsilon))
+            self.dielectric_materials.append(self.csx.AddMaterial(f"Substrate_{i}", epsilon=layer.epsilon))
 
     def add_mesh(self) -> None:
         """Add mesh to simulation."""
@@ -152,27 +152,57 @@ class Simulation:
             xyz[0] * xyz[1] * xyz[2] / 1.0e6,
         )
 
-    def add_gerbers(self) -> None:
-        """Add metal from all gerber files."""
-        logger.info("Adding copper from gerber files")
+    def add_layers(self) -> None:
+        """Add layers from config"""
+        logger.info("Adding layers")
+        config = Config.get()
 
-        offset = 0
+        z_offset = 0
         metal_index = 0
         substrate_index = 0
-        for layer in Config.get().layers:
+        for index, layer in enumerate(config.layers):
+            z_start = z_offset
+            z_end = z_offset - layer.thickness
+
+            if layer.kind == LayerKind.METAL:
+                material = self.metal_materials[metal_index]
+            else:
+                material = self.dielectric_materials[substrate_index]
+
+            layer_kind = "metal" if layer.kind == LayerKind.METAL else "dielectric"
+            logger.info(
+                "Added layer %d: name=%s, file=%s, kind=%s, z=%f, thickness=%f",
+                index, layer.name, layer.file, layer_kind, z_start, layer.thickness
+            )
+
+            if layer.file is None:
+                self._add_plane(z_start, material, layer.thickness, layer.priority)
+            else:
+                contours = importer.get_triangles(layer.file + ".png")
+                self._add_contours(contours, z_start, material, layer.thickness, layer.priority)
+
             if layer.kind == LayerKind.SUBSTRATE:
-                offset -= layer.thickness
+                z_offset -= layer.thickness
                 substrate_index += 1
             elif layer.kind == LayerKind.METAL:
-                logger.info("Adding contours for %s", layer.file)
-                contours = importer.get_triangles(layer.file + ".png")
-                material = self.gerber_materials[metal_index]
-                self.add_contours(contours, offset, material, layer.thickness)
+                # Metal layers are embedded into dielectric so they don't affect z-height
                 metal_index += 1
 
-    def add_contours(self, contours: np.ndarray, z_height: float, material, thickness: float) -> None:
+
+    def _add_plane(self, z_height: float, material, thickness: float, priority: int) -> None:
+        config = Config.get()
+        material.AddBox(
+            [0, 0, z_height],
+            [
+                config.pcb_width,
+                config.pcb_height,
+                z_height - thickness,
+            ],
+            priority=priority,
+        )
+
+    def _add_contours(self, contours: np.ndarray, z_height: float, material, thickness: float, priority: int) -> None:
         """Add contours as flat polygons on specified z-height."""
-        logger.debug("Adding contours on z=%f, thickness=%f", z_height, thickness)
         for contour in contours:
             points: List[List[float]] = [[], []]
             for point in contour:
@@ -180,9 +210,9 @@ class Simulation:
                 points[0].append((point[1]))
                 points[1].append(Config.get().pcb_height - point[0])
             if thickness > 0.0:
-                material.AddLinPoly(points, "z", z_height+thickness/2, -thickness, priority=50)
+                material.AddLinPoly(points, "z", z_height+thickness/2, -thickness, priority=priority)
             else:
-                material.AddPolygon(points, "z", z_height, priority=50)
+                material.AddPolygon(points, "z", z_height, priority=priority)
 
     def get_metal_layer_offset(self, index: int) -> float:
         """Get z offset of nth metal layer."""
@@ -200,6 +230,7 @@ class Simulation:
 
     def add_msl_port(self, port_config: PortConfig, port_number: int, excite: bool = False):
         """Add microstripline port based on config."""
+        config = Config.get()
         logger.debug("Adding port number %d", len(self.ports))
 
         if port_config.position is None or port_config.direction is None:
@@ -247,7 +278,7 @@ class Simulation:
             dir_map[int(port_config.direction)],
             "z",
             Feed_R=port_config.impedance,
-            priority=100,
+            priority=config.material_priorities.simulation_port,
             excite=1 if excite else 0,
         )
         self.ports.append(port)
@@ -259,6 +290,7 @@ class Simulation:
 
     def add_resistive_port(self, port_config: PortConfig, excite: bool = False):
         """Add resistive port based on config."""
+        config = Config.get()
         logger.debug("Adding port number %d", len(self.ports))
 
         if port_config.position is None or port_config.direction is None:
@@ -294,7 +326,7 @@ class Simulation:
             stop,
             "z",
             excite=1 if excite else 0,
-            priority=100,
+            priority=config.material_priorities.simulation_port,
         )
         self.ports.append(port)
 
@@ -310,6 +342,7 @@ class Simulation:
 
     def add_virtual_port(self, port_config: PortConfig) -> None:
         """Add virtual port for extracting sim data from files. Needed due to OpenEMS api desing."""
+        config = Config.get()
         logger.debug("Adding virtual port number %d", len(self.ports))
         for i in range(11):
             self.mesh.AddLine("x", i)
@@ -324,59 +357,10 @@ class Simulation:
             "x",
             "z",
             Feed_R=port_config.impedance,
-            priority=100,
+            priority=config.material_priorities.simulation_port,
             excite=0,
         )
         self.ports.append(port)
-
-    def add_plane(self, z_height):
-        """Add metal plane in whole bounding box of the PCB."""
-        self.plane_material.AddBox(
-            [0, 0, z_height],
-            [Config.get().pcb_width, Config.get().pcb_height, z_height],
-            priority=1,
-        )
-
-    def add_substrates(self):
-        """Add substrate in whole bounding box of the PCB."""
-        logger.info("Adding substrates")
-
-        offset = 0
-        for i, layer in enumerate(Config.get().get_substrates()):
-            if not layer.file is None:
-                logger.debug("Create layer from gerber file %s", layer.file)
-                contours = importer.get_triangles(layer.file + ".png")
-                material = self.substrate_materials[i]
-                # self.add_contours(contours, offset, material)
-                z_start = offset
-                z_end = offset - layer.thickness
-                priority_offset = 0
-                if not layer.priority_offset is None:
-                    logger.debug(f"Layer has priority offset {layer.priority_offset}")
-                    priority_offset = layer.priority_offset
-                for contour in contours:
-                    points: List[List[float]] = [[], []]
-                    for point in contour:
-                        # Half of the border thickness is subtracted as image is shifted by it
-                        points[0].append((point[1]))
-                        points[1].append(Config.get().pcb_height - point[0])
-                    material.AddLinPoly(points, "z", z_start, -layer.thickness, priority=-i + priority_offset)
-                    for z_offset in layer.duplicate_z:
-                        material.AddLinPoly(points, "z", z_start - z_offset, -layer.thickness, priority=-i + priority_offset)
-                logger.debug("Added substrate as linpoly from z=[%f,%f] um, thickness=%f um", z_start, z_end, layer.thickness)
-                logger.debug(f"Substrate duplicate z offsets: {layer.duplicate_z} um")
-            else:
-                self.substrate_materials[i].AddBox(
-                    [0, 0, offset],
-                    [
-                        Config.get().pcb_width,
-                        Config.get().pcb_height,
-                        offset - layer.thickness,
-                    ],
-                    priority=-i,
-                )
-                logger.debug("Added substrate as box from %f to %f", offset, offset - layer.thickness)
-            offset -= layer.thickness
 
     def add_vias(self):
         """Add all vias from excellon file."""
@@ -395,14 +379,14 @@ class Simulation:
         for i in range(VIA_POLYGON):
             x_coords.append(x_pos + np.sin(i / VIA_POLYGON * 2 * np.pi) * diameter / 2)
             y_coords.append(y_pos + np.cos(i / VIA_POLYGON * 2 * np.pi) * diameter / 2)
-        self.via_filling_material.AddLinPoly([x_coords, y_coords], "z", -thickness, thickness, priority=101)
+        self.via_filling_material.AddLinPoly([x_coords, y_coords], "z", -thickness, thickness, priority=config.material_priorities.via_filling)
 
         x_coords = []
         y_coords = []
         for i in range(VIA_POLYGON)[::-1]:
             x_coords.append(x_pos + np.sin(i / VIA_POLYGON * 2 * np.pi) * (diameter / 2 + config.via_plating))
             y_coords.append(y_pos + np.cos(i / VIA_POLYGON * 2 * np.pi) * (diameter / 2 + config.via_plating))
-        self.via_material.AddLinPoly([x_coords, y_coords], "z", -thickness, thickness, priority=100)
+        self.via_material.AddLinPoly([x_coords, y_coords], "z", -thickness, thickness, priority=config.material_priorities.via_metal)
 
     def add_dump_boxes(self):
         """Add electric field measurement plane in the middle of each metal and substrate layer"""
