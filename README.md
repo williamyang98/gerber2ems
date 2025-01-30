@@ -1,4 +1,5 @@
 [![Deploy gh-pages](https://github.com/williamyang98/gerber2ems/actions/workflows/hugo-deploy.yml/badge.svg)](https://github.com/williamyang98/gerber2ems/actions/workflows/hugo-deploy.yml)
+[![Verify Windows install](https://github.com/williamyang98/gerber2ems/actions/workflows/verify-win-install.yml/badge.svg)](https://github.com/williamyang98/gerber2ems/actions/workflows/verify-win-install.yml)
 
 # gerber2ems - openEMS simulation based on Gerber files
 

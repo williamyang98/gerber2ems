@@ -1,0 +1,72 @@
+name: Verify Windows install
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  skip_check:
+    continue-on-error: false
+    runs-on: ubuntu-22.04
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+    - id: skip_check
+      uses: fkirc/skip-duplicate-actions@v5
+      with:
+        concurrent_skipping: 'same_content'
+        cancel_others: 'true'
+        skip_after_successful_duplicate: 'true'
+        paths_ignore: '["**/README.md**", "**LICENSE**", "docs/**"]'
+        do_not_skip: '["workflow_dispatch", "schedule"]'
+
+  build:
+    needs: skip_check
+    if: needs.skip_check.outputs.should_skip != 'true'
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Download openEMS and gerbv
+      shell: bash
+      run: ./vendor/download.sh
+
+    - name: Create python virtual environment
+      shell: bash
+      run: python -m venv venv
+
+    - name: Install gerber2ems
+      shell: bash
+      run: |
+        . ./venv/Scripts/activate
+        . ./vendor/update_path.sh
+        pip install -e .
+
+    - name: Check if gerber2ems runs
+      shell: bash
+      run: |
+        . ./venv/Scripts/activate
+        . ./vendor/update_path.sh
+        gerber2ems -h
+
+    - name: Perform geometry pass for gerber2ems
+      shell: bash
+      run: |
+        . ./venv/Scripts/activate
+        . ./vendor/update_path.sh
+        cd examples/differential
+        gerber2ems --geometry --debug
+
+    - name: Upload geometry pass files
+      uses: actions/upload-artifact@v4
+      with:
+        name: verify_win_install
+        path: ${{github.workspace}}/examples/differential/ems

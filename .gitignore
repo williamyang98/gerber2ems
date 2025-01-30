@@ -1,11 +1,3 @@
-examples/*/*
-examples/*/fab/*
-!examples/*/*.kicad_pcb
-!examples/*/*.kicad_pcb
-!examples/*/*.kicad_pro
-!examples/*/*.kicad_sch
-!examples/*/simulation.json
-
 .vscode/
 .mypy_cache/
 __pycache__/
