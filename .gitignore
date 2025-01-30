@@ -10,6 +10,9 @@ examples/*/fab/*
 .mypy_cache/
 __pycache__/
 ems-kicad.sh
-.venv
+.venv/
+venv/
+env/
+.env/
 *.egg-info/
 build/
