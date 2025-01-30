@@ -1,0 +1,9 @@
+{{- $cols := default 3 (.Get "cols") -}}
+<div class="hextra-cards hx-mt-4 hx-gap-4 hx-grid not-prose" style="--hextra-cards-grid-cols: {{ $cols }};">
+{{ range .Page.Pages.ByWeight }}
+  {{- $icon := default "bookmark" (.Param "icon") -}}
+  {{- $title := .Title -}}
+  {{- $link := .RelPermalink -}}
+  {{ partial "shortcodes/card.html" (dict "title" $title "icon" $icon "link" $link) }}
+{{ end }}
+</div>

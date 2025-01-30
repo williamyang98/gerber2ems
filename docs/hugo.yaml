@@ -1,0 +1,39 @@
+title: gerber2ems
+theme: hextra
+languageCode: en-us
+
+markup:
+  # allow raw html
+  goldmark:
+    renderer:
+      unsafe: true
+  # enable hextra syntax highlight
+  highlight:
+    noClasses: false
+menu:
+  main:
+    - name: Docs
+      pageRef: /docs
+      weight: 1
+    - name: Search
+      weight: 3
+      params:
+        type: search
+    - name: GitHub
+      weight: 4
+      url: "https://github.com/williamyang98/gerber2ems"
+      params:
+        icon: github
+params:
+  navbar:
+    displayTitle: true
+    displayLogo: false
+  footer:
+    displayCopyright: false
+    displayPoweredBy: false
+  editURL:
+    enable: true
+    base: https://github.com/williamyang98/gerber2ems/blob/main/docs/content
+  search:
+    enable: true
+    type: flexsearch

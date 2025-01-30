@@ -192,7 +192,7 @@ def parse_arguments() -> Any:
         prog="EM-Simulator",
         description="This application allows to perform EM simulations for PCB's created with KiCAD",
     )
-    parser.add_argument("-c", "--config", dest="config", metavar="CONFIG_FILE")
+    parser.add_argument("-c", "--config", dest="config", type=str, default="./simulation.json")
     parser.add_argument("-i", "--input", dest="input", type=str, default="./fab")
     parser.add_argument("-o", "--output", dest="output", type=str, default="./ems")
     parser.add_argument(
@@ -232,7 +232,7 @@ def parse_arguments() -> Any:
         help="Export electric field data from the simulation",
     )
 
-    parser.add_argument("--threads", dest="threads", help="Number of threads to run the simulation on")
+    parser.add_argument("-t", "--threads", dest="threads", help="Number of threads to run the simulation on")
 
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-d", "--debug", action="store_true", dest="debug")
@@ -273,10 +273,7 @@ def setup_logging(args: Any) -> None:
 
 def open_config(args: Any) -> None:
     """Try to open and parse config as json."""
-    file_name = args.config
-    if file_name is None:  # If filename is not supplied fallback to default
-        file_name = os.path.join(os.getcwd(), "simulation.json")
-    file_name = os.path.abspath(file_name)
+    file_name = os.path.abspath(args.config)
     if not os.path.isfile(file_name):
         logger.error("Config file doesn't exist: %s", file_name)
         sys.exit(1)

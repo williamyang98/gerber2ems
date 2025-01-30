@@ -1,0 +1,29 @@
+- arg: ["-h", "--help"]
+  message: "Prints the help message."
+- arg: ["-c [file]", "--config [file]"]
+  message: "Specifies the location of the simulation configuration file."
+  default: "./simulation.json"
+- arg: ["-i [dir]", "--input [dir]"]
+  message: "Specifies the directory containing the exported Gerber, drill and simulation port files."
+  default: "./fab"
+- arg: ["-o [dir]", "--output [dir]"]
+  message: "Specifies the location of the: geometry data, simulation results, export E-fields, and post processed graphs."
+  default: "./ems"
+- arg: ["-g", "--geometry"]
+  message: "Flag to create geometry files for openEMS."
+- arg: ["-s", "--simulate"]
+  message: "Flag to run openEMS simulation."
+- arg: ["-p", "--postprocess"]
+  message: "Flag to process openEMS results into graphs."
+- arg: ["-a", "--all"]
+  message: "Flag to enable geometry, simulate and postprocess steps."
+- arg: ["--ef", "--export-field"]
+  message: "Flag to enable exporting field data if specified in layer config."
+- arg: ["-t [threads]", "--threads [threads]"]
+  message: "Number of threads that openEMS simulation will use."
+  default: "auto"
+- arg: ["-d", "--debug"]
+  message: "Flag to enable debug level logging output."
+- arg: ["-l [level]", "--log [level]"]
+  message: "Set logging level: ```[DEBUG, INFO, WARNING, ERROR]```."
+  default: "INFO"

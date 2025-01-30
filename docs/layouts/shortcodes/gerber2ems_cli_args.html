@@ -1,0 +1,28 @@
+{{- $args := .Site.Data.gerber2ems_cli_args -}}
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 30%">Option</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{ range $args }}
+    <tr>
+      <td>
+        {{ range .arg }}
+        <code class="cli_arg">{{ . }}</code>
+        {{ end }}
+      </td>
+      <td>
+        {{ .message | markdownify }}
+        {{ with .default }}
+          <br><code class="cli_arg">default: {{ . }}</code>
+        {{ end }}
+      </td>
+    </tr>
+    {{ end }}
+  </tbody>
+</table>
+

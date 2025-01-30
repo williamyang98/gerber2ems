@@ -1,0 +1,57 @@
+kicad_file_menu:
+  path: "/images/kicad_file_menu.png"
+  description: "Figure 1. KiCAD 8.0 file menu options for exporting design"
+kicad_export_gerber:
+  path: "/images/kicad_export_gerber.png"
+  description: "Figure 2. KiCAD 8.0 export Gerber files dialog"
+kicad_export_drill:
+  path: "/images/kicad_export_drill.png"
+  description: "Figure 3. KiCAD 8.0 generate drill files dialog"
+kicad_export_ports:
+  path: "/images/kicad_export_ports.png"
+  description: "Figure 4. KiCAD 8.0 generate placement files dialog"
+kicad_simulation_port:
+  path: "/images/kicad_simulation_port.png"
+  description: "Figure 5. KiCAD 8.0 simulation port properties"
+appcxcad_usage:
+  path: "/images/appcxcad_usage.png"
+  description: "Figure 6. AppCSXCad screenshot"
+results_A_delay:
+  path: "/images/results_A_delay.png"
+  description: "Figure 7. Propagation delay of differential pairs"
+results_S_x1:
+  path: "/images/results_S_x1.png"
+  description: "Figure 8. S parameters for port 1"
+results_S_x3:
+  path: "/images/results_S_x3.png"
+  description: "Figure 9. S parameters for port 3"
+results_S_11_smith:
+  path: "/images/results_S_11_smith.png"
+  description: "Figure 10. Smith chart for S11 parameter"
+results_S_33_smith:
+  path: "/images/results_S_33_smith.png"
+  description: "Figure 10. Smith chart for S33 parameter"
+results_SDD:
+  path: "/images/results_SDD_A.png"
+  description: "Figure 11. Differential pair S parameters"
+results_Z_1:
+  path: "/images/results_Z_1.png"
+  description: "Figure 12. Impedance of differential pair trace 1"
+results_Z_3:
+  path: "/images/results_Z_3.png"
+  description: "Figure 13. Impedance of differential pair trace 3"
+results_Z_diff_A:
+  path: "/images/results_Z_diff_A.png"
+  description: "Figure 14. Combined impedance of differential pair"
+paraview_1_open_file:
+  path: "/images/paraview_1_open_file.png"
+paraview_2_view_e_field:
+  path: "/images/paraview_2_view_e_field.png"
+paraview_3_set_range:
+  path: "/images/paraview_3_set_range.png"
+paraview_4_colour_map:
+  path: "/images/paraview_4_colour_map.png"
+paraview_5_playback:
+  path: "/images/paraview_5_playback.png"
+paraview_6_add_copper:
+  path: "/images/paraview_6_add_copper.png"
