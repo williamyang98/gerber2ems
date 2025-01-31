@@ -72,6 +72,7 @@ class Simulation:
                 np.arange(0 - mesh / 2, pcb_width + mesh / 2, step=mesh),
             )
         )
+        x_lines = np.round(x_lines)
         self.mesh.AddLine("x", x_lines)
         # Margin
         self.mesh.SmoothMeshLines("x", config.margin_mesh_xy, ratio=config.smoothing_ratio)
@@ -92,6 +93,7 @@ class Simulation:
                 np.arange(0 - mesh / 2, pcb_height + mesh / 2, step=mesh),
             ]
         )
+        y_lines = np.round(y_lines)
         self.mesh.AddLine("y", y_lines)
         # Margin
         self.mesh.SmoothMeshLines("y", config.margin_mesh_xy, ratio=config.smoothing_ratio)
@@ -129,8 +131,7 @@ class Simulation:
             if layer.kind == LayerKind.SUBSTRATE:
                 offset -= layer.thickness
         z_lines = np.concatenate([z_lines, [config.margin_z, 0, offset, offset - config.margin_z]])
-        # z_lines = np.round(z_lines)
-
+        z_lines = np.round(z_lines)
         self.mesh.AddLine("z", z_lines)
         # Margin
         self.mesh.SmoothMeshLines("z", config.margin_mesh_z, ratio=config.smoothing_ratio)
@@ -192,33 +193,35 @@ class Simulation:
     def _add_plane(self, z_height: float, material, thickness: float, priority: int) -> None:
         config = Config.get()
         material.AddBox(
-            [0, 0, z_height],
+            [0, 0, round(z_height)],
             [
-                config.pcb_width,
-                config.pcb_height,
-                z_height - thickness,
+                round(config.pcb_width),
+                round(config.pcb_height),
+                round(z_height - thickness),
             ],
             priority=priority,
         )
 
     def _add_contours(self, contours: np.ndarray, z_height: float, material, thickness: float, priority: int) -> None:
         """Add contours as flat polygons on specified z-height."""
+        config = Config.get()
         for contour in contours:
             points: List[List[float]] = [[], []]
             for point in contour:
                 # Half of the border thickness is subtracted as image is shifted by it
-                points[0].append((point[1]))
-                points[1].append(Config.get().pcb_height - point[0])
+                points[0].append(round(point[1]))
+                points[1].append(round(config.pcb_height - point[0]))
             if thickness > 0.0:
-                material.AddLinPoly(points, "z", z_height+thickness/2, -thickness, priority=priority)
+                material.AddLinPoly(points, "z", round(z_height+thickness/2), round(-thickness), priority=priority)
             else:
-                material.AddPolygon(points, "z", z_height, priority=priority)
+                material.AddPolygon(points, "z", round(z_height), priority=priority)
 
     def get_metal_layer_offset(self, index: int) -> float:
         """Get z offset of nth metal layer."""
         current_metal_index = -1
         offset = 0
-        for layer in Config.get().layers:
+        config = Config.get()
+        for layer in config.layers:
             if layer.kind == LayerKind.METAL:
                 current_metal_index += 1
                 if current_metal_index == index:
@@ -384,9 +387,9 @@ class Simulation:
         x_coords = []
         y_coords = []
         for i in range(VIA_POLYGON)[::-1]:
-            x_coords.append(x_pos + np.sin(i / VIA_POLYGON * 2 * np.pi) * (diameter / 2 + config.via_plating))
-            y_coords.append(y_pos + np.cos(i / VIA_POLYGON * 2 * np.pi) * (diameter / 2 + config.via_plating))
-        self.via_material.AddLinPoly([x_coords, y_coords], "z", -thickness, thickness, priority=config.material_priorities.via_metal)
+            x_coords.append(round(x_pos + np.sin(i / VIA_POLYGON * 2 * np.pi) * (diameter / 2 + config.via_plating)))
+            y_coords.append(round(y_pos + np.cos(i / VIA_POLYGON * 2 * np.pi) * (diameter / 2 + config.via_plating)))
+        self.via_material.AddLinPoly([x_coords, y_coords], "z", round(-thickness), round(thickness), priority=config.material_priorities.via_metal)
 
     def add_dump_boxes(self):
         """Add electric field measurement plane in the middle of each metal and substrate layer"""
@@ -399,14 +402,14 @@ class Simulation:
                 logger.info("Adding dump box at i=%d, name=%s, z=%f, thickness=%s, kind=%s", i, layer.name, height, layer.thickness, layer_kind)
                 dump = self.csx.AddDump(f"e_field_{i}", sub_sampling=[1, 1, 1])
                 start = [
-                    -config.margin_xy,
-                    -config.margin_xy,
-                    height,
+                    round(-config.margin_xy),
+                    round(-config.margin_xy),
+                    round(height),
                 ]
                 stop = [
-                    config.pcb_width + config.margin_xy,
-                    config.pcb_height + config.margin_xy,
-                    height,
+                    round(config.pcb_width + config.margin_xy),
+                    round(config.pcb_height + config.margin_xy),
+                    round(height),
                 ]
                 dump.AddBox(start, stop)
             # Metal layers are embedded in dielectric
@@ -424,14 +427,15 @@ class Simulation:
 
     def set_excitation(self):
         """Set gauss excitation according to config."""
+        config = Config.get()
         logger.debug(
             "Setting excitation to gaussian pulse from %f to %f",
-            Config.get().start_frequency,
-            Config.get().stop_frequency,
+            config.start_frequency,
+            config.stop_frequency,
         )
         self.fdtd.SetGaussExcite(
-            (Config.get().start_frequency + Config.get().stop_frequency) / 2,
-            (Config.get().stop_frequency - Config.get().start_frequency) / 2,
+            (config.start_frequency + config.stop_frequency) / 2,
+            (config.stop_frequency - config.start_frequency) / 2,
         )
 
     def set_sinus_excitation(self, freq):
