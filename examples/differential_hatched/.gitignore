@@ -1,7 +1,6 @@
 # gerber2ems outputs
 ems/
 ems_*/
-fab/
 
 # For PCBs designed using KiCad: https://www.kicad.org/
 # Format documentation: https://kicad.org/help/file-formats/

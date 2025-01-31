@@ -340,7 +340,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "custom:test_pad_0"
+		(property "Footprint" "simulation_port:pad_0.1mm"
 			(at 118.11 71.12 0)
 			(effects
 				(font
@@ -407,7 +407,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "custom:test_pad_0"
+		(property "Footprint" "simulation_port:pad_0.1mm"
 			(at 107.95 134.62 0)
 			(effects
 				(font
@@ -474,7 +474,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "custom:test_pad_0"
+		(property "Footprint" "simulation_port:pad_0.1mm"
 			(at 144.78 71.12 0)
 			(effects
 				(font
@@ -541,7 +541,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "custom:test_pad_0"
+		(property "Footprint" "simulation_port:pad_0.1mm"
 			(at 134.62 134.62 0)
 			(effects
 				(font
@@ -608,7 +608,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "custom:test_pad_0"
+		(property "Footprint" "simulation_port:pad_0.05mm"
 			(at 172.72 71.12 0)
 			(effects
 				(font

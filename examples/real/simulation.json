@@ -1,10 +1,10 @@
 {
     "format_version": "1.1",
     "frequency": {
-        "start": 1e9,
-        "stop": 10e9
+        "start": 0.5e9,
+        "stop": 20e9
     },
-    "max_steps": 80e3,
+    "max_steps": 50e3,
     "via": {
         "filling_epsilon": 1,
         "plating_thickness": 50
@@ -51,7 +51,6 @@
             "name": "F.Cu",
             "file": "F_Cu",
             "type": "copper",
-            "thickness": 0.035,
             "export_field": true
         },
         {
@@ -64,8 +63,7 @@
         {
             "name": "B.Cu",
             "file": "B_Cu",
-            "type": "copper",
-            "thickness": 0.035
+            "type": "copper"
         }
     ]
 }

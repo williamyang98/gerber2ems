@@ -1,10 +1,10 @@
 {
     "format_version": "1.1",
     "frequency": {
-        "start": 1e8,
+        "start": 0.5e9,
         "stop": 40e9
     },
-    "max_steps": 100e3,
+    "max_steps": 60e3,
     "via": {
         "filling_epsilon": 1,
         "plating_thickness": 50
@@ -23,8 +23,8 @@
         "z": 400
     },
     "offset": {
-        "x": -0.025,
-        "y": -0.0375
+        "x": -0.020,
+        "y": -0.035
     },
     "nanomesh": {
         "min_spacing": 0.25,
@@ -32,33 +32,33 @@
     },
     "ports": [
         {
-            "width": 150,
-            "length": 150,
-            "impedance": 32.5,
+            "width": 100,
+            "length": 100,
+            "impedance": 42.5,
             "layer": 0,
             "plane": 1,
             "excite": true
         },
         {
-            "width": 150,
-            "length": 150,
-            "impedance": 32.5,
+            "width": 100,
+            "length": 100,
+            "impedance": 42.5,
             "layer": 0,
             "plane": 1,
             "excite": false
         },
         {
-            "width": 150,
-            "length": 150,
-            "impedance": 32.5,
+            "width": 100,
+            "length": 100,
+            "impedance": 42.5,
             "layer": 0,
             "plane": 1,
             "excite": true
         },
         {
-            "width": 150,
-            "length": 150,
-            "impedance": 32.5,
+            "width": 100,
+            "length": 100,
+            "impedance": 42.5,
             "layer": 0,
             "plane": 1,
             "excite": false
@@ -78,53 +78,32 @@
             "name": "Polyimide top",
             "type": "core",
             "thickness": 0.0125,
-            "epsilon": 3.3,
-            "z_mesh_count": 1
-        },
-        {
-            "name": "Adhesive top",
-            "type": "core",
-            "thickness": 0.015,
-            "epsilon": 3.1,
-            "z_mesh_count": 2
+            "epsilon": 3.3
         },
         {
             "name": "F.Cu",
             "file": "F_Cu",
             "type": "copper",
-            "thickness": 0.012,
-            "export_field": true,
-            "z_mesh_count": 4
+            "export_field": true
         },
         {
             "name": "Polyimide core",
             "type": "core",
             "thickness": 0.025,
             "epsilon": 3.3,
-            "export_field": true,
-            "z_mesh_count": 4
+            "export_field": true
         },
         {
             "name": "B.Cu",
             "file": "B_Cu",
             "type": "copper",
-            "thickness": 0.012,
-            "export_field": true,
-            "z_mesh_count": 4
-        },
-        {
-            "name": "Adhesive bottom",
-            "type": "core",
-            "thickness": 0.015,
-            "epsilon": 3.1,
-            "z_mesh_count": 2
+            "export_field": true
         },
         {
             "name": "Polyimide bottom",
             "type": "core",
             "thickness": 0.0125,
-            "epsilon": 3.3,
-            "z_mesh_count": 1
+            "epsilon": 3.3
         }
     ]
 }
