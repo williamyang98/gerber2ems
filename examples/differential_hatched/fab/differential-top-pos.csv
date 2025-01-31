@@ -1,0 +1,5 @@
+Ref,Val,Package,PosX,PosY,Rot,Side
+"SP0","Simulation_Port","pad_0.1mm",0.590000,2.455000,180.000000,top
+"SP1","Simulation_Port","pad_0.1mm",0.590000,0.505000,0.000000,top
+"SP2","Simulation_Port","pad_0.1mm",0.840000,2.455000,180.000000,top
+"SP3","Simulation_Port","pad_0.1mm",0.840000,0.505000,0.000000,top
