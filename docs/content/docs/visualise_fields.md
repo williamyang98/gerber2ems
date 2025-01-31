@@ -1,6 +1,7 @@
 ---
 title: Visualise fields
 prev: /docs/visualise_geometry
+next: /docs/bugs
 weight: 7
 params:
     icon: eye

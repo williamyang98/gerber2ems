@@ -19,6 +19,14 @@ import gerber2ems.importer as importer
 
 logger = logging.getLogger(__name__)
 
+class PortBoundingBox:
+    def __init__(self, start, stop, dir) -> None:
+        self.start = start # (x,y,z)
+        self.stop = stop # (x,y,z)
+        self.dir = dir # "x" or "y" direction
+
+    def __repr__(self):
+        return f"PortBBox(start={self.start}, end={self.stop}, dir={self.dir})"
 
 class Simulation:
     """Class used for interacting with openEMS."""
@@ -212,7 +220,7 @@ class Simulation:
                 points[0].append(round(point[1]))
                 points[1].append(round(config.pcb_height - point[0]))
             if thickness > 0.0:
-                material.AddLinPoly(points, "z", round(z_height+thickness/2), round(-thickness), priority=priority)
+                material.AddLinPoly(points, "z", round(z_height+thickness/2), -round(thickness), priority=priority)
             else:
                 material.AddPolygon(points, "z", round(z_height), priority=priority)
 
@@ -231,139 +239,132 @@ class Simulation:
         logger.error("Hadn't found %dth metal layer", index)
         sys.exit(1)
 
-    def add_msl_port(self, port_config: PortConfig, port_number: int, excite: bool = False):
-        """Add microstripline port based on config."""
-        config = Config.get()
-        logger.debug("Adding port number %d", len(self.ports))
-
+    def _get_port_bbox(self, port_config: PortConfig) -> PortBoundingBox:
         if port_config.position is None or port_config.direction is None:
-            logger.error("Port has no defined position or rotation, skipping")
-            return
+            raise Exception("Port has no defined position or rotation, skipping")
 
         while port_config.direction < 0:
             port_config.direction += 360
 
         dir_map = {0: "y", 90: "x", 180: "y", 270: "x"}
         if int(port_config.direction) not in dir_map:
-            logger.error("Ports rotation is not a multiple of 90 degrees which is not supported, skipping")
-            return
+            raise Exception(f"Ports rotation ({port_config.direction}) is not a multiple of 90 degrees which is not supported")
 
-        start_z = self.get_metal_layer_offset(port_config.layer)
-        stop_z = self.get_metal_layer_offset(port_config.plane)
+        config = Config.get()
+        metal_layers = config.get_metals()
+        signal_layer = metal_layers[port_config.layer]
+        reference_layer = metal_layers[port_config.plane]
 
-        angle = port_config.direction / 360 * 2 * math.pi
+        signal_layer_z = self.get_metal_layer_offset(port_config.layer)
+        reference_layer_z = self.get_metal_layer_offset(port_config.plane)
+        # FIXME: We still can't get the port to contact the metal layer if it is 3D (has thickness)
+        #       This was an attempt to see if setting the port on the surface of the layer would fix this.
+        #       However we still end up with open contacts which ruins low frequency data.
+        # signal trace is above reference plane
+        # if port_config.layer < port_config.plane:
+        #     start_z = signal_layer_z - signal_layer.thickness/2
+        #     stop_z = reference_layer_z + reference_layer.thickness/2
+        # else:
+        #     start_z = signal_layer_z + signal_layer.thickness/2
+        #     stop_z = reference_layer_z - reference_layer.thickness/2
+        start_z = signal_layer_z
+        stop_z = reference_layer_z
 
-        start = [
-            round(port_config.position[0] - (port_config.width / 2) * round(math.cos(angle))),
-            round(port_config.position[1] - (port_config.width / 2) * round(math.sin(angle))),
+        pos_x = port_config.position[0]
+        pos_y = port_config.position[1]
+        size_x = port_config.width
+        size_y = port_config.length
+
+        # rotate bounding box around port position
+        angle = port_config.direction*math.pi/180
+        rot_x = 0.5*(size_x*math.cos(angle) - size_y*math.sin(angle))
+        rot_y = 0.5*(size_x*math.sin(angle) + size_y*math.cos(angle))
+
+        bbox_start = [
+            round(pos_x - rot_x),
+            round(pos_y - rot_y),
             round(start_z),
         ]
-        stop = [
-            round(
-                port_config.position[0]
-                + (port_config.width / 2) * round(math.cos(angle))
-                - port_config.length * round(math.sin(angle))
-            ),
-            round(
-                port_config.position[1]
-                + (port_config.width / 2) * round(math.sin(angle))
-                + port_config.length * round(math.cos(angle))
-            ),
+        bbox_stop = [
+            round(pos_x + rot_x),
+            round(pos_y + rot_y),
             round(stop_z),
         ]
-        logger.debug("Adding port at start: %s end: %s", start, stop)
+        bbox_dir = dir_map[int(port_config.direction)]
+        return PortBoundingBox(bbox_start, bbox_stop, bbox_dir)
+
+    def add_msl_port(self, port_config: PortConfig, port_number: int, excite: bool = False):
+        """Add microstripline port based on config."""
+        config = Config.get()
+        port_bbox = self._get_port_bbox(port_config)
+        logger.debug(f"Adding micro stripline port {port_number} at: {port_bbox}")
 
         port = self.fdtd.AddMSLPort(
             port_number,
             self.port_material,
-            start,
-            stop,
-            dir_map[int(port_config.direction)],
+            port_bbox.start,
+            port_bbox.stop,
+            port_bbox.dir,
             "z",
             Feed_R=port_config.impedance,
             priority=config.material_priorities.simulation_port,
             excite=1 if excite else 0,
         )
         self.ports.append(port)
-
-        self.mesh.AddLine("x", start[0])
-        self.mesh.AddLine("x", stop[0])
-        self.mesh.AddLine("y", start[1])
-        self.mesh.AddLine("y", stop[1])
+        self.mesh.AddLine("x", port_bbox.start[0])
+        self.mesh.AddLine("x", port_bbox.stop[0])
+        self.mesh.AddLine("y", port_bbox.start[1])
+        self.mesh.AddLine("y", port_bbox.stop[1])
 
     def add_resistive_port(self, port_config: PortConfig, excite: bool = False):
         """Add resistive port based on config."""
         config = Config.get()
-        logger.debug("Adding port number %d", len(self.ports))
-
-        if port_config.position is None or port_config.direction is None:
-            logger.error("Port has no defined position or rotation, skipping")
-            return
-
-        dir_map = {0: "y", 90: "x", 180: "y", 270: "x"}
-        if int(port_config.direction) not in dir_map:
-            logger.error("Ports rotation is not a multiple of 90 degrees which is not supported, skipping")
-            return
-
-        start_z = self.get_metal_layer_offset(port_config.layer)
-        stop_z = self.get_metal_layer_offset(port_config.plane)
-
-        angle = port_config.direction / 360 * 2 * math.pi
-
-        start = [
-            round(port_config.position[0] - (port_config.width / 2) * round(math.cos(angle))),
-            round(port_config.position[1] - (port_config.width / 2) * round(math.sin(angle))),
-            round(start_z),
-        ]
-        stop = [
-            round(port_config.position[0] + (port_config.width / 2) * round(math.cos(angle))),
-            round(port_config.position[1] - (port_config.width / 2) * round(math.sin(angle))),
-            round(stop_z),
-        ]
-        logger.debug("Adding resistive port at start: %s end: %s", start, stop)
+        port_bbox = self._get_port_bbox(port_config)
+        logger.debug(f"Adding resistive port {port_number} at: {port_bbox}")
 
         port = self.fdtd.AddLumpedPort(
             len(self.ports),
             port_config.impedance,
-            start,
-            stop,
+            port_bbox.start,
+            port_bbox.stop,
             "z",
             excite=1 if excite else 0,
             priority=config.material_priorities.simulation_port,
         )
         self.ports.append(port)
 
-        logger.debug("Port direction: %s", dir_map[int(port_config.direction)])
-        if dir_map[int(port_config.direction)] == "y":
-            self.mesh.AddLine("x", start[0])
-            self.mesh.AddLine("x", stop[0])
-            self.mesh.AddLine("y", start[1])
+        if port_bbox.dir == "y":
+            self.mesh.AddLine("x", port_bbox.start[0])
+            self.mesh.AddLine("x", port_bbox.stop[0])
+            self.mesh.AddLine("y", port_bbox.start[1])
         else:
-            self.mesh.AddLine("x", start[0])
-            self.mesh.AddLine("y", start[1])
-            self.mesh.AddLine("y", stop[1])
+            self.mesh.AddLine("x", port_bbox.start[0])
+            self.mesh.AddLine("y", port_bbox.start[1])
+            self.mesh.AddLine("y", port_bbox.stop[1])
 
-    def add_virtual_port(self, port_config: PortConfig) -> None:
+    def add_virtual_port(self, port_config: PortConfig, port_number: int) -> None:
         """Add virtual port for extracting sim data from files. Needed due to OpenEMS api desing."""
         config = Config.get()
-        logger.debug("Adding virtual port number %d", len(self.ports))
-        for i in range(11):
-            self.mesh.AddLine("x", i)
-            self.mesh.AddLine("y", i)
-        self.mesh.AddLine("z", 0)
-        self.mesh.AddLine("z", 10)
+        port_bbox = self._get_port_bbox(port_config)
+        logger.debug(f"Adding virtual port {port_number} at: {port_bbox}")
         port = self.fdtd.AddMSLPort(
             len(self.ports),
             self.port_material,
-            [0, 0, 0],
-            [10, 10, 10],
-            "x",
+            port_bbox.start,
+            port_bbox.stop,
+            port_bbox.dir,
             "z",
             Feed_R=port_config.impedance,
             priority=config.material_priorities.simulation_port,
             excite=0,
         )
         self.ports.append(port)
+        self.mesh.AddLine("x", port_bbox.start[0])
+        self.mesh.AddLine("x", port_bbox.stop[0])
+        self.mesh.AddLine("y", port_bbox.start[1])
+        self.mesh.AddLine("y", port_bbox.stop[1])
+        self.mesh.AddLine("z", port_bbox.start[2])
+        self.mesh.AddLine("z", port_bbox.stop[2])
 
     def add_vias(self):
         """Add all vias from excellon file."""

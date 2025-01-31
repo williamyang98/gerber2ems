@@ -97,6 +97,11 @@ class LayerConfig:
             self.file = None
         self.thickness = get(config, ["thickness"], (float, int), 0)
         self.thickness = self.thickness / 1000 / UNIT
+        self.thickness = int(self.thickness) # must be unit number of microns
+        if self.kind == LayerKind.METAL and self.thickness % 2 != 0:
+            # need thickness of metal layers to be even since we need to divide the thickness in 2 when embedding it
+            logger.warning(f"Metal layer name={self.name} has thickness in microns that isn't odd, will be changed to even")
+            self.thickness += 1
         self.export_field = get(config, ["export_field"], bool, False)
         self.z_mesh_count = get(config, ["z_mesh_count"], int, -1)
         if self.z_mesh_count == -1:

@@ -39,6 +39,9 @@ def main():
     config_json, config_filepath = open_config(args)
     config = Config(config_json, args)
     create_dir(config.dirs.output_dir)
+ 
+    logger.info("Importing port locations")
+    importer.import_port_positions()
 
     if args.geometry or args.all:
         logger.info("Creating geometry")
@@ -59,18 +62,16 @@ def main():
 def add_ports(sim: Simulation, excited_port_number: Optional[int] = None) -> None:
     """Add ports for simulation."""
     logger.info("Adding ports")
-
     sim.ports = []
-    importer.import_port_positions()
-
     for index, port_config in enumerate(Config.get().ports):
         sim.add_msl_port(port_config, index, index == excited_port_number)
 
 def add_virtual_ports(sim: Simulation) -> None:
     """Add virtual ports needed for data postprocessing due to openEMS api design."""
     logger.info("Adding virtual ports")
-    for port_config in Config.get().ports:
-        sim.add_virtual_port(port_config)
+    config = Config.get()
+    for index, port_config in enumerate(config.ports):
+        sim.add_virtual_port(port_config, index)
 
 
 def geometry() -> None:
