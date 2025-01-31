@@ -40,33 +40,21 @@ def main():
     config = Config(config_json, args)
     create_dir(config.dirs.output_dir)
 
-    sim = Simulation()
-
-    if args.all or args.geometry or args.simulate:
-        logger.info("Cloning config file")
-        shutil.copy(config_filepath, os.path.join(config.dirs.output_dir, "simulation.json"))
-
     if args.geometry or args.all:
         logger.info("Creating geometry")
         create_dir(config.dirs.geometry_dir, cleanup=True)
         importer.process_gbrs_to_pngs()
-        logger.info("Cloning fab output files")
-        create_dir(config.dirs.fab_dir, cleanup=True)
-        shutil.copytree(config.dirs.input_dir, config.dirs.fab_dir, dirs_exist_ok=True)
-
-    if args.geometry or args.simulate or args.postprocess or args.all:
-        logger.info("Saving geometry")
-        geometry(sim)
+        geometry()
 
     if args.simulate or args.all:
         logger.info("Running simulation")
         create_dir(config.dirs.simulation_dir, cleanup=True)
         simulate(threads=args.threads)
+
     if args.postprocess or args.all:
         logger.info("Postprocessing")
         create_dir(config.dirs.results_dir, cleanup=True)
-        postprocess(sim)
-
+        postprocess()
 
 def add_ports(sim: Simulation, excited_port_number: Optional[int] = None) -> None:
     """Add ports for simulation."""
@@ -78,7 +66,6 @@ def add_ports(sim: Simulation, excited_port_number: Optional[int] = None) -> Non
     for index, port_config in enumerate(Config.get().ports):
         sim.add_msl_port(port_config, index, index == excited_port_number)
 
-
 def add_virtual_ports(sim: Simulation) -> None:
     """Add virtual ports needed for data postprocessing due to openEMS api design."""
     logger.info("Adding virtual ports")
@@ -86,7 +73,7 @@ def add_virtual_ports(sim: Simulation) -> None:
         sim.add_virtual_port(port_config)
 
 
-def geometry(sim: Simulation) -> None:
+def geometry() -> None:
     """Create a geometry for the simulation."""
     config = Config.get()
     top_layer_name = config.get_metals()[0].file
@@ -94,6 +81,7 @@ def geometry(sim: Simulation) -> None:
     config.pcb_height = height
     config.pcb_width = width
 
+    sim = Simulation()
     sim.create_materials()
     sim.add_layers()
     sim.add_mesh()
@@ -102,30 +90,11 @@ def geometry(sim: Simulation) -> None:
     sim.set_boundary_conditions(pml=False)
     sim.add_vias()
     add_ports(sim)
+    logger.info("Saving geometry file")
     sim.save_geometry()
-
 
 def simulate(threads: None | int = None) -> None:
     """Run the simulation."""
-    # for index, pair in enumerate(Config.get().diff_pairs):
-    #     if not pair.correct:
-    #         continue
-    #     logging.info(f"Simulating differential pair gaussian pulse index={index}, name={pair.name}")
-    #     logging.info(f"  P+ ({pair.start_p}->{pair.stop_p}), P- ({pair.start_n}->{pair.stop_n})")
-    #     sim = Simulation()
-    #     sim.create_materials()
-    #     sim.set_excitation()
-    #     # add ports
-    #     logger.info("Adding ports")
-    #     sim.ports = []
-    #     importer.import_port_positions()
-    #     ports = Config.get().ports
-    #     sim.add_msl_port(ports[pair.start_p], pair.start_p, True)
-    #     sim.add_msl_port(ports[pair.stop_p], pair.stop_p, False)
-    #     sim.add_msl_port(ports[pair.start_n], pair.start_n, True)
-    #     sim.add_msl_port(ports[pair.stop_n], pair.stop_n, False)
-
-    # regular simulation
     for index, port in enumerate(Config.get().ports):
         if port.excite:
             sim = Simulation()
@@ -136,32 +105,10 @@ def simulate(threads: None | int = None) -> None:
             add_ports(sim, index)
             sim.run(f"{index}", threads=threads)
 
-    # time domain reflectivity
-    # for index, port in enumerate(Config.get().ports):
-    #     if port.excite:
-    #         logging.info("Simulating with excitation on port #%i for time domain reflectivity", index)
-    #         sim = Simulation()
-    #         sim.create_materials()
-    #         sim.set_step_excitation(Config.get().stop_frequency)
-    #         sim.load_geometry()
-    #         add_ports(sim, index)
-    #         sim.run(f"tdr_{index}", threads=threads)
-
-    # sinusoidal test
-    # for index, port in enumerate(Config.get().ports):
-    #     if port.excite:
-    #         freq = 20e9
-    #         # freq = Config.get().stop_frequency
-    #         logging.info("Simulating with excitation on port #%i at %f Hz for sinusoial", index, freq)
-    #         sim = Simulation()
-    #         sim.create_materials()
-    #         sim.set_sinus_excitation(freq)
-    #         sim.load_geometry()
-    #         add_ports(sim, index)
-    #         sim.run(f"freq_{index}_{freq}", threads=threads)
-
-def postprocess(sim: Simulation) -> None:
+def postprocess() -> None:
     """Postprocess data from the simulation."""
+    sim = Simulation()
+    sim.load_geometry()
     if len(sim.ports) == 0:
         add_virtual_ports(sim)
 
@@ -293,7 +240,6 @@ def open_config(args: Any) -> None:
 
     return (config, file_name)
 
-
 def create_dir(path: str, cleanup: bool = False) -> None:
     """Create a directory if doesn't exist."""
     directory_path = path
@@ -301,7 +247,6 @@ def create_dir(path: str, cleanup: bool = False) -> None:
         shutil.rmtree(directory_path)
     if not os.path.exists(directory_path):
         os.mkdir(directory_path)
-
 
 if __name__ == "__main__":
     main()

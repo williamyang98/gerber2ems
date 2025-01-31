@@ -180,7 +180,6 @@ class DirectoryConfig:
         self.simulation_dir = os.path.join(output_dir, "simulation")
         self.geometry_dir = os.path.join(output_dir, "geometry")
         self.results_dir = os.path.join(output_dir, "results")
-        self.fab_dir = os.path.join(output_dir, "fab")
 
 class Config:
     """Class representing and parsing config."""
