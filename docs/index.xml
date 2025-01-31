@@ -1392,4 +1392,33 @@ Your browser does not support the video tag
 &lt;div>examples/differential_hatched&lt;/div>
 &lt;/a>
 &lt;/div>
-&lt;/p></description></item></channel></rss>
+&lt;/p></description></item><item><title>Bugs</title><link>https://williamyang98.github.io/gerber2ems/docs/bugs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/bugs/</guid><description>
+&lt;p>&lt;strong>Bug 1: Metal layers with thickness do not make contact with ports&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>There will be no contact between a micro stripline port with a metal layer that has &lt;code>layers.thickness&lt;/code> set to a non-zero value.&lt;/li>
+&lt;li>Only way to guarantee contact is to use a 0 thickness metal layer.&lt;/li>
+&lt;li>Symptoms include the S parameters and impedance showing an open circuit at low frequencies (&amp;lt; 1GHz).&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Bug 2: openEMS produces corrupt data if the simulation timestep is too fast&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>Symptoms include postprocessing of data failing due to corrupted port data.&lt;/li>
+&lt;li>Can be visually seen by going to &lt;code>ems/simulation/{excited_port}/port_it_{port}&lt;/code>.&lt;/li>
+&lt;li>Numbers will be mangled and there will be missing rows and columns.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Bug 3: openEMS will randomly segfault during startup&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>When running simulation through &lt;code>gerber2ems -s&lt;/code> there is a small chance of crashing.&lt;/li>
+&lt;li>Running simulation pass again usually fixes this.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Bug 4: nanomesh will sometimes merge or remove traces&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>When running geometry pass nanomesh has to convert image of layers to mesh data.&lt;/li>
+&lt;li>With insufficient settings there will be deletion of traces or merging of traces.&lt;/li>
+&lt;li>Modify &lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#configuring-nanomesh
+" >nanomesh configuration&lt;/a> to fix this
+&lt;ul>
+&lt;li>Increasing &lt;code>nanomesh.quality&lt;/code>.&lt;/li>
+&lt;li>Decreasing &lt;code>nanomesh.min_spacing&lt;/code>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item></channel></rss>
