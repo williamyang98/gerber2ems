@@ -15,7 +15,8 @@ Run the simulation with post processing as shown [here]({{< abs_url link="/docs/
 gerber2ems -a
 ```
 
-- Results of post processing should be stored in ```ems/results/*.png```.
+- Results of post processing should be stored in ```ems/results/*.csv```.
+- Graphs should be stored in ```ems/graphs/*.png```.
 - The ```ems``` folder is controlled by the ```--output``` argument to ```gerbv``` which is [explained here]({{< abs_url link="/docs/running/#options" >}})
 
 ## Post processed results

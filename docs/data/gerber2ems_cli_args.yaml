@@ -16,7 +16,9 @@
 - arg: ["-s", "--simulate"]
   message: "Run openEMS simulation."
 - arg: ["-p", "--postprocess"]
-  message: "Process openEMS results into graphs."
+  message: "Process openEMS results into S parameters and impedance values and saves them to a csv file."
+- arg: ["-r", "--render"]
+  message: "Renders graph of processed data."
 - arg: ["-a", "--all"]
   message: "Run convert, geometry, simulate, and postprocess steps."
 - arg: ["--ef", "--export-field"]

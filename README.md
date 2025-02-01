@@ -26,9 +26,10 @@ Documentation can be found [here](https://williamyang98.github.io/gerber2ems/doc
 3. [Configuration](https://williamyang98.github.io/gerber2ems/docs/configuration)
 4. [Running simulation](https://williamyang98.github.io/gerber2ems/docs/running)
 5. [Visualise results](https://williamyang98.github.io/gerber2ems/docs/visualise_results)
-6. [Visualise geometry](https://williamyang98.github.io/gerber2ems/docs/visualise_geometry) 
+6. [Visualise geometry](https://williamyang98.github.io/gerber2ems/docs/visualise_geometry)
 7. [Visualise fields](https://williamyang98.github.io/gerber2ems/docs/visualise_fields)
-8. [Bugs](https://williamyang98.github.io/gerber2ems/docs/bugs) 
+8. [Bugs](https://williamyang98.github.io/gerber2ems/docs/bugs)
+9. [Tips](https://williamyang98.github.io/gerber2ems/docs/tips)
 
 ## Gallery
 ### Smith chart

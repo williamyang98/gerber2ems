@@ -52,8 +52,12 @@ gerber2ems -g
 gerber2ems -s
 ```
 
-```bash {filename="Run postprocessing pass only"}
+```bash {filename="Run postprocessing results only"}
 gerber2ems -p
+```
+
+```bash {filename="Run graph rendering only"}
+gerber2ems -r
 ```
 
 ```bash {filename="Run simulation with custom number of threads"}
