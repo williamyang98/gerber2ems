@@ -63,7 +63,7 @@ jobs:
         . ./venv/Scripts/activate
         . ./vendor/update_path.sh
         cd examples/differential
-        gerber2ems --geometry --debug
+        gerber2ems -a --debug
 
     - name: Upload geometry pass files
       uses: actions/upload-artifact@v4
