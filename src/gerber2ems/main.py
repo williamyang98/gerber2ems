@@ -27,13 +27,14 @@ def main():
 
     if not any(
         [
+            args.convert,
             args.geometry,
             args.simulate,
             args.postprocess,
             args.all,
         ]
     ):
-        logger.info('No steps selected. Exiting. To select steps use "-g", "-s", "-p", "-a" flags')
+        logger.info('No steps selected. Exiting. To select steps use "-c", -g", "-s", "-p", "-a" flags')
         sys.exit(0)
 
     config_json, config_filepath = open_config(args)
@@ -43,10 +44,14 @@ def main():
     logger.info("Importing port locations")
     importer.import_port_positions()
 
+    if args.convert or args.all:
+        logger.info("Converting Gerber files to images")
+        create_dir(config.dirs.image_dir, cleanup=True)
+        importer.process_gbrs_to_pngs()
+
     if args.geometry or args.all:
         logger.info("Creating geometry")
         create_dir(config.dirs.geometry_dir, cleanup=True)
-        importer.process_gbrs_to_pngs()
         geometry()
 
     if args.simulate or args.all:
@@ -140,29 +145,35 @@ def parse_arguments() -> Any:
         prog="EM-Simulator",
         description="This application allows to perform EM simulations for PCB's created with KiCAD",
     )
-    parser.add_argument("-c", "--config", dest="config", type=str, default="./simulation.json")
+    parser.add_argument("--config", dest="config", type=str, default="./simulation.json")
     parser.add_argument("-i", "--input", dest="input", type=str, default="./fab")
     parser.add_argument("-o", "--output", dest="output", type=str, default="./ems")
+    parser.add_argument(
+        "-c", 
+        "--convert",
+        dest="convert",
+        action="store_true", 
+        help="Convert Gerber files to image files")
     parser.add_argument(
         "-g",
         "--geometry",
         dest="geometry",
         action="store_true",
-        help="Create geometry",
+        help="Create geometry files for openEMS",
     )
     parser.add_argument(
         "-s",
         "--simulate",
         dest="simulate",
         action="store_true",
-        help="Run simulation",
+        help="Run openEMS simulation",
     )
     parser.add_argument(
         "-p",
         "--postprocess",
         dest="postprocess",
         action="store_true",
-        help="Postprocess the data",
+        help="Postprocess openEMS data to graphs",
     )
     parser.add_argument(
         "-a",
@@ -179,7 +190,6 @@ def parse_arguments() -> Any:
         action="store_true",
         help="Export electric field data from the simulation",
     )
-
     parser.add_argument("-t", "--threads", dest="threads", help="Number of threads to run the simulation on")
 
     group = parser.add_mutually_exclusive_group()

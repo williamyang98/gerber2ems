@@ -182,8 +182,9 @@ class DirectoryConfig:
     def __init__(self, input_dir: str, output_dir: str):
         self.input_dir = input_dir
         self.output_dir = output_dir
-        self.simulation_dir = os.path.join(output_dir, "simulation")
+        self.image_dir = os.path.join(output_dir, "images")
         self.geometry_dir = os.path.join(output_dir, "geometry")
+        self.simulation_dir = os.path.join(output_dir, "simulation")
         self.results_dir = os.path.join(output_dir, "results")
 
 class Config:

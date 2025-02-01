@@ -51,7 +51,7 @@ def process_gbrs_to_pngs():
         args.append([
             os.path.join(config.dirs.input_dir, name),
             os.path.join(config.dirs.input_dir, edge),
-            os.path.join(config.dirs.geometry_dir, output),
+            os.path.join(config.dirs.image_dir, output),
         ])
 
     with multiprocessing.Pool() as pool:
@@ -98,7 +98,7 @@ def get_dimensions(input_filename: str) -> Tuple[int, int]:
     gets it's size and subtracts border thickness to get board dimensions
     """
     config = Config.get()
-    path = os.path.join(config.dirs.geometry_dir, input_filename)
+    path = os.path.join(config.dirs.image_dir, input_filename)
     image = PIL.Image.open(path)
     image_width, image_height = image.size
     height = image_height * PIXEL_SIZE - BORDER_THICKNESS
@@ -116,7 +116,7 @@ def get_triangles(input_filename: str) -> np.ndarray:
     Returns a list of triangles, where each triangle consists of coordinates for each vertex.
     """
     config = Config.get()
-    path = os.path.join(config.dirs.geometry_dir, input_filename)
+    path = os.path.join(config.dirs.image_dir, input_filename)
     image = PIL.Image.open(path)
     gray = image.convert("L")
     threshold_cutoff = 32
@@ -139,8 +139,7 @@ def get_triangles(input_filename: str) -> np.ndarray:
     # mesh = mesher.triangulate()
     mesh = mesher.triangulate(opts=f"q{nanomesh_config.quality}a{nanomesh_config.max_triangle_area}")
 
-    # if Config.get().arguments.debug:
-    filename = os.path.join(config.dirs.geometry_dir, input_filename + "_mesh.png")
+    filename = os.path.join(config.dirs.image_dir, input_filename + "_mesh.png")
     logger.debug("Saving mesh to file: %s", filename)
     mesh.plot_mpl(lw=0.1)
     plt.savefig(filename, dpi=600)
