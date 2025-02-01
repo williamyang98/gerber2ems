@@ -881,7 +881,16 @@ Run openEMS simulation.
 &lt;code class="cli_arg">--postprocess&lt;/code>
 &lt;/td>
 &lt;td>
-Process openEMS results into graphs.
+Process openEMS results into S parameters and impedance values and saves them to a csv file.
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
+&lt;code class="cli_arg">-r&lt;/code>
+&lt;code class="cli_arg">--render&lt;/code>
+&lt;/td>
+&lt;td>
+Renders graph of processed data.
 &lt;/td>
 &lt;/tr>
 &lt;tr>
@@ -1028,7 +1037,18 @@ title="Copy code"
 &lt;/div>
 &lt;/div>
 &lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
-&lt;div class="filename not-prose" dir="auto">Run postprocessing pass only&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -p&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;div class="filename not-prose" dir="auto">Run postprocessing results only&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -p&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Run graph rendering only&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -r&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
 &lt;button
 class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
 title="Copy code"
@@ -1075,7 +1095,8 @@ title="Copy code"
 &lt;/div>
 &lt;/div>
 &lt;ul>
-&lt;li>Results of post processing should be stored in &lt;code>ems/results/*.png&lt;/code>.&lt;/li>
+&lt;li>Results of post processing should be stored in &lt;code>ems/results/*.csv&lt;/code>.&lt;/li>
+&lt;li>Graphs should be stored in &lt;code>ems/graphs/*.png&lt;/code>.&lt;/li>
 &lt;li>The &lt;code>ems&lt;/code> folder is controlled by the &lt;code>--output&lt;/code> argument to &lt;code>gerbv&lt;/code> which is &lt;a href="https://williamyang98.github.io/gerber2ems//docs/running/#options
 " >explained here&lt;/a>&lt;/li>
 &lt;/ul>
@@ -1143,15 +1164,8 @@ title="Copy code"
 &lt;/div>
 &lt;/div>
 &lt;/p></description></item><item><title>Visualise geometry</title><link>https://williamyang98.github.io/gerber2ems/docs/visualise_geometry/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/visualise_geometry/</guid><description>
-&lt;ul>
-&lt;li>Geometry data can be visualised with &lt;code>AppCSXCad&lt;/code> which should come pre-installed with &lt;code>openEMS&lt;/code>.&lt;/li>
-&lt;li>This is especially useful for confirming whether or not simulation ports are placed correctly.
-&lt;ul>
-&lt;li>To correct for undesired offsets in the simulation port location adjust the &lt;code>offset.x&lt;/code> and &lt;code>offset.y&lt;/code> values in the configuration file as &lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#simulation-settings
-" >explained here&lt;/a>.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
+&lt;h2>Visualising with AppCSXCad&lt;span class="hx-absolute -hx-mt-20" id="visualising-with-appcsxcad">&lt;/span>
+&lt;a href="#visualising-with-appcsxcad" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;p>Geometry data can be visualised with &lt;code>AppCSXCad&lt;/code> which should come pre-installed with &lt;code>openEMS&lt;/code>.&lt;/p>
 &lt;div class="hx-overflow-x-auto hx-mt-6 hx-flex hx-flex-col hx-rounded-lg hx-border hx-py-4 hx-px-4 contrast-more:hx-border-current contrast-more:dark:hx-border-current hx-border-indigo-200 hx-bg-indigo-100 hx-text-indigo-900 dark:hx-border-indigo-200/30 dark:hx-bg-indigo-900/30 dark:hx-text-indigo-200">
 &lt;p class="hx-flex hx-items-center hx-font-medium">&lt;svg height=16px class="hx-inline-block hx-align-middle hx-mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">&lt;path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>&lt;/svg>Important&lt;/p>
 &lt;div class="hx-w-full hx-min-w-0 hx-leading-7">
@@ -1160,9 +1174,9 @@ title="Copy code"
 &lt;/div>
 &lt;/div>
 &lt;div class="steps hx-ml-4 hx-mb-12 ltr:hx-border-l rtl:hx-border-r hx-border-gray-200 ltr:hx-pl-6 rtl:hx-pr-6 dark:hx-border-neutral-800 [counter-reset:step]">
-&lt;h3>Generate your geometry file with gerber2ems.&lt;span class="hx-absolute -hx-mt-20" id="generate-your-geometry-file-with-gerber2ems">&lt;/span>
-&lt;a href="#generate-your-geometry-file-with-gerber2ems" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
-&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems --geometry&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+&lt;h3>Generate your image and geometry files with gerber2ems.&lt;span class="hx-absolute -hx-mt-20" id="generate-your-image-and-geometry-files-with-gerber2ems">&lt;/span>
+&lt;a href="#generate-your-image-and-geometry-files-with-gerber2ems" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems --convert --geometry&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
 &lt;button
 class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
 title="Copy code"
@@ -1201,6 +1215,50 @@ title="Copy code"
 &lt;i>Figure 6. AppCSXCad screenshot&lt;/i>
 &lt;/div>
 &lt;/div>
+&lt;/div>
+&lt;h2>Visualising gerbv images&lt;span class="hx-absolute -hx-mt-20" id="visualising-gerbv-images">&lt;/span>
+&lt;a href="#visualising-gerbv-images" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;p>&lt;code>gerbv&lt;/code> is used to convert Gerber files into images. Then &lt;code>nanomesh&lt;/code> is used to convert those images into mesh data for &lt;code>openEMS&lt;/code>. To view these intermediate image files follow these steps.&lt;/p>
+&lt;div class="steps hx-ml-4 hx-mb-12 ltr:hx-border-l rtl:hx-border-r hx-border-gray-200 ltr:hx-pl-6 rtl:hx-pr-6 dark:hx-border-neutral-800 [counter-reset:step]">
+&lt;h3>Convert Gerber files into image files&lt;span class="hx-absolute -hx-mt-20" id="convert-gerber-files-into-image-files">&lt;/span>
+&lt;a href="#convert-gerber-files-into-image-files" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># generate gerbv image files&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">gerber2ems --convert
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># generate geometry data which outputs mesh results from images files using nanomesh&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">gerber2ems --geometry&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;h3>View images&lt;span class="hx-absolute -hx-mt-20" id="view-images">&lt;/span>
+&lt;a href="#view-images" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h3>&lt;p>All images are located in the specified output folder &lt;code>default: ems&lt;/code>.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Filename&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>images/{layer}_Cu_not_cropped.png&lt;/code>&lt;/td>
+&lt;td>Uncropped images produced by Gerber to image conversion with &lt;code>gerbv&lt;/code>.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>images/{layer}_Cu.png&lt;/code>&lt;/td>
+&lt;td>Cropped images using Python &lt;code>Pillow&lt;/code> to fit edge cuts outline.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>geometry/{layer}_mesh.png&lt;/code>&lt;/td>
+&lt;td>Mesh generated from image using Python &lt;code>nanomesh&lt;/code> for importing into openEMS.&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
 &lt;/div></description></item><item><title>Visualise fields</title><link>https://williamyang98.github.io/gerber2ems/docs/visualise_fields/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/visualise_fields/</guid><description>
 &lt;p>E-field data can be visualised with &lt;a href="https://www.paraview.org/" target="_blank" rel="noopener">ParaView&lt;/a> which is data visualisation software.&lt;/p>
 &lt;h2>Instructions&lt;span class="hx-absolute -hx-mt-20" id="instructions">&lt;/span>
@@ -1451,21 +1509,76 @@ Your browser does not support the video tag
 &lt;li>Symptoms include postprocessing of data failing due to corrupted port data.&lt;/li>
 &lt;li>Can be visually seen by going to &lt;code>ems/simulation/{excited_port}/port_it_{port}&lt;/code>.&lt;/li>
 &lt;li>Numbers will be mangled and there will be missing rows and columns.&lt;/li>
+&lt;li>To avoid this you have to make each timestep more expensive to run.&lt;/li>
+&lt;li>Modify the &lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#pcb-mesh-properties
+" >PCB mesh properties&lt;/a> to fix this
+&lt;ul>
+&lt;li>Decrease &lt;code>mesh.xy&lt;/code> to increase the grid resolution along x and y axes.&lt;/li>
+&lt;li>Increase &lt;code>mesh.inter_layers&lt;/code> to increase grid resolution along z axis.&lt;/li>
+&lt;li>Decrease &lt;code>mesh.smoothing_ratio&lt;/code> to increase number of grid lines overall.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Modify the &lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#simulation-settings
+" >simulation settings&lt;/a> to fix this
+&lt;ul>
+&lt;li>Increase &lt;code>margin.xy&lt;/code> and &lt;code>margin.z&lt;/code> to increase size of the air gap to simulate around the PCB.&lt;/li>
+&lt;/ul>
+&lt;/li>
 &lt;/ul>
 &lt;p>&lt;strong>Bug 3: openEMS will randomly segfault during startup&lt;/strong>&lt;/p>
 &lt;ul>
 &lt;li>When running simulation through &lt;code>gerber2ems -s&lt;/code> there is a small chance of crashing.&lt;/li>
 &lt;li>Running simulation pass again usually fixes this.&lt;/li>
-&lt;/ul>
-&lt;p>&lt;strong>Bug 4: nanomesh will sometimes merge or remove traces&lt;/strong>&lt;/p>
+&lt;/ul></description></item><item><title>Tips</title><link>https://williamyang98.github.io/gerber2ems/docs/tips/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://williamyang98.github.io/gerber2ems/docs/tips/</guid><description>
+&lt;p>&lt;strong>Tip 1: Check copper traces are imported correctly&lt;/strong>&lt;/p>
 &lt;ul>
+&lt;li>&lt;code>nanomesh&lt;/code> and &lt;code>gerbv&lt;/code> may delete or merge traces in the final mesh.&lt;/li>
+&lt;li>Follow &lt;a href="https://williamyang98.github.io/gerber2ems//docs/visualising_geometry
+" >visualising geometry&lt;/a> to confirm all traces are intact.&lt;/li>
+&lt;li>Symptoms include high impedance values in results and a high S11 parameter meaning high input reflections.&lt;/li>
 &lt;li>When running geometry pass nanomesh has to convert image of layers to mesh data.&lt;/li>
 &lt;li>With insufficient settings there will be deletion of traces or merging of traces.&lt;/li>
 &lt;li>Modify &lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#configuring-nanomesh
-" >nanomesh configuration&lt;/a> to fix this
+" >nanomesh configuration&lt;/a> to fix this.
 &lt;ul>
 &lt;li>Increasing &lt;code>nanomesh.quality&lt;/code>.&lt;/li>
 &lt;li>Decreasing &lt;code>nanomesh.min_spacing&lt;/code>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Tip 2: Fix simulation port and drill offsets&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>Currently there isn&amp;rsquo;t automatic alignment of drill and component positions to the Gerber files.&lt;/li>
+&lt;li>Symptoms include high impedance values in results and a high S11 parameter meaning high input reflections.&lt;/li>
+&lt;li>Follow &lt;a href="https://williamyang98.github.io/gerber2ems//docs/visualising_geometry
+" >visualising geometry&lt;/a> to see if vias and simulation ports are placed correctly.&lt;/li>
+&lt;li>To correct for undesired offsets in the simulation port location adjust the &lt;code>offset.x&lt;/code> and &lt;code>offset.y&lt;/code> values in the configuration file as &lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#simulation-settings
+" >explained here&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Tip 3: Double check port assignment&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>Follow &lt;a href="https://williamyang98.github.io/gerber2ems//docs/visualising_fields
+" >visualising fields&lt;/a> to see if excited ports have been assigned correctly.&lt;/li>
+&lt;li>Paraview visualisation will show if you have any ports swapped based on the excitation signal travel direction and location.&lt;/li>
+&lt;li>Additionally it will also indicate any bad connections if the excitation signal does not propagation according to expectations.&lt;/li>
+&lt;li>Revisit the following configuration file settings to fix this.
+&lt;ul>
+&lt;li>&lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#simulation-ports
+" >Simulation ports&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#differential-pairs
+" >Differential pairs&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://williamyang98.github.io/gerber2ems//docs/configuration/#signal-traces
+" >Signal traces&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Make sure you are exporting simulation ports correctly.
+&lt;ul>
+&lt;li>&lt;a href="https://williamyang98.github.io/gerber2ems//docs/export_pcb/#ports-file--poscsv
+" >Format of port position file&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://williamyang98.github.io/gerber2ems//docs/export_pcb/#creating-simulation-ports
+" >Creating simulation ports in KiCAD 8.0&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://williamyang98.github.io/gerber2ems//docs/export_pcb/#export-ports-file
+" >Exporting port positions in KiCAD 8.0&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ul></description></item></channel></rss>
