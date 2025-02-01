@@ -31,10 +31,11 @@ def main():
             args.geometry,
             args.simulate,
             args.postprocess,
+            args.render,
             args.all,
         ]
     ):
-        logger.info('No steps selected. Exiting. To select steps use "-c", -g", "-s", "-p", "-a" flags')
+        logger.info('No steps selected. Exiting. To select steps use "-c", -g", "-s", "-p", "-r", "-a" flags')
         sys.exit(0)
 
     config_json, config_filepath = open_config(args)
@@ -59,10 +60,15 @@ def main():
         create_dir(config.dirs.simulation_dir, cleanup=True)
         simulate(threads=args.threads)
 
-    if args.postprocess or args.all:
+    if args.postprocess or args.render or args.all:
         logger.info("Postprocessing")
         create_dir(config.dirs.results_dir, cleanup=True)
-        postprocess()
+        post = postprocess()
+
+    if args.render or args.all:
+        logger.info("Rendering plots")
+        create_dir(config.dirs.graphs_dir, cleanup=True)
+        render(post)
 
 def add_ports(sim: Simulation, excited_port_number: Optional[int] = None) -> None:
     """Add ports for simulation."""
@@ -111,33 +117,36 @@ def simulate(threads: None | int = None) -> None:
             add_ports(sim, index)
             sim.run(f"{index}", threads=threads)
 
-def postprocess() -> None:
+def postprocess() -> Postprocesor:
     """Postprocess data from the simulation."""
     sim = Simulation()
     sim.load_geometry()
     if len(sim.ports) == 0:
         add_virtual_ports(sim)
-
-    frequencies = np.linspace(Config.get().start_frequency, Config.get().stop_frequency, 1001)
-    post = Postprocesor(frequencies, len(Config.get().ports))
-    impedances = np.array([p.impedance for p in Config.get().ports])
+    config = Config.get()
+    frequencies = np.linspace(config.start_frequency, config.stop_frequency, 1001)
+    post = Postprocesor(frequencies, len(config.ports))
+    impedances = np.array([p.impedance for p in config.ports])
     post.add_impedances(impedances)
 
-    for index, port in enumerate(Config.get().ports):
+    for index, port in enumerate(config.ports):
         if port.excite:
             reflected, incident = sim.get_port_parameters(index, frequencies)
             for i, _ in enumerate(Config.get().ports):
                 post.add_port_data(i, index, incident[i], reflected[i])
-
     post.process_data()
     post.save_to_file()
-    post.render_s_params()
-    post.render_impedance()
-    post.render_smith()
-    post.render_diff_pair_s_params()
-    post.render_diff_impedance()
-    post.render_trace_delays()
+    return post
 
+def render(data) -> None:
+    """Render data from the postprocessing steps"""
+    import gerber2ems.render as R
+    R.render_s_params(data)
+    R.render_impedance(data)
+    R.render_smith(data)
+    R.render_diff_pair_s_params(data)
+    R.render_diff_impedance(data)
+    R.render_trace_delays(data)
 
 def parse_arguments() -> Any:
     """Parse commandline arguments."""
@@ -173,7 +182,14 @@ def parse_arguments() -> Any:
         "--postprocess",
         dest="postprocess",
         action="store_true",
-        help="Postprocess openEMS data to graphs",
+        help="Postprocess openEMS data into S parameters and impedance values",
+    )
+    parser.add_argument(
+        "-r",
+        "--render",
+        dest="render",
+        action="store_true",
+        help="Render postprocessed results as graphs"
     )
     parser.add_argument(
         "-a",

@@ -10,6 +10,7 @@ requirements = [
     "Pillow",
     "scikit-rf",
     "h5py",
+    "pandas"
 ]
 
 PYTHON_VERSION = sys.version_info[:2]

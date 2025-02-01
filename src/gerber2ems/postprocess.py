@@ -1,17 +1,19 @@
 """Module contains functions usefull for postprocessing data."""
-from typing import Union
-import logging
-import os
-
-import numpy as np
-import matplotlib.pyplot as plt
-import skrf
-
 from gerber2ems.config import Config
-from gerber2ems.constants import PLOT_STYLE
+from collections import OrderedDict
+from typing import Union
+import os
+import logging
+import numpy as np
+import pandas as pd
 
 logger = logging.getLogger(__name__)
 
+class DifferentialParams:
+    def __init__(self, s11, s21, Z):
+        self.s11 = s11
+        self.s21 = s21
+        self.Z = Z
 
 class Postprocesor:
     """Class used to postprocess and display simulation data."""
@@ -41,6 +43,8 @@ class Postprocesor:
         self.delays = np.empty(
             [self.count, self.count, len(self.frequencies)], np.float64
         )  # Group delay table ([output_port][input_port][frequency])
+        # Table of [{start_p}{stop_p}{start_n}{stop_n}] -> DifferentialParams
+        self.differential_params = {}
 
     def add_port_data(
         self,
@@ -65,6 +69,7 @@ class Postprocesor:
     def process_data(self):
         """Calculate all needed parameters for further processing. Should be called after all ports are added."""
         logger.info("Processing all data from simulation. Calculating S-parameters and impedance")
+        config = Config.get()
         for i, _ in enumerate(self.incident):
             if self.is_valid(self.incident[i][i]):
                 for j, _ in enumerate(self.incident):
@@ -90,6 +95,44 @@ class Postprocesor:
                         group_delay = np.append(group_delay, group_delay[-1])
                         self.delays[j][i] = group_delay
 
+        for index, pair in enumerate(config.diff_pairs):
+            if pair.correct:
+                self._process_diff_pair(index, pair)
+
+    def _process_diff_pair(self, index: int, pair):
+        # differential S parameters
+        sdd_11 = 0.5 * (
+            self.s_params[pair.start_p][pair.start_p]
+            - self.s_params[pair.start_n][pair.start_p]
+            - self.s_params[pair.start_p][pair.start_n]
+            + self.s_params[pair.start_n][pair.start_n]
+        )
+        sdd_21 = 0.5 * (
+            self.s_params[pair.stop_p][pair.start_p]
+            - self.s_params[pair.stop_p][pair.start_n]
+            - self.s_params[pair.stop_n][pair.start_p]
+            + self.s_params[pair.stop_n][pair.start_n]
+        )
+        # differential impedance
+        s11 = self.s_params[pair.start_p][pair.start_p]
+        s21 = self.s_params[pair.start_n][pair.start_p]
+        s12 = self.s_params[pair.start_p][pair.start_n]
+        s22 = self.s_params[pair.start_n][pair.start_n]
+        gamma = ((2 * s11 - s21) * (1 - s22 - s12) + (1 - s11 - s21) * (1 + s22 - 2 * s12)) / (
+            (2 - s21) * (1 - s22 - s12) + (1 - s11 - s21) * (1 + s22)
+        )
+        if not (
+            self.reference_zs[pair.start_p]
+            == self.reference_zs[pair.start_n]
+            == self.reference_zs[pair.stop_p]
+            == self.reference_zs[pair.stop_n]
+        ):
+            logger.warning(f"Differential pair {index} might have incorrect calculated impedance since ports dont have identical impedance")
+        z0 = self.reference_zs[pair.start_p]
+        impedance = z0 * (1 + gamma) / (1 - gamma)
+        params = DifferentialParams(sdd_11, sdd_21, impedance)
+        self.differential_params[index] = params
+
     def get_impedance(self, port: int) -> Union[np.ndarray, None]:
         """Return specified port impedance."""
         if port >= self.count:
@@ -114,264 +157,52 @@ class Postprocesor:
         logger.error("S%d%d wasn't calculated", output_port, input_port)
         return None
 
-    def render_s_params(self):
-        """Render all S parameter plots to files."""
-        config = Config.get()
-        logger.info("Rendering S-parameter plots")
-        plt.style.use(PLOT_STYLE)
-        for i in range(self.count):
-            if self.is_valid(self.s_params[i][i]):
-                fig, axes = plt.subplots()
-                for j in range(self.count):
-                    s_param = self.s_params[j][i]
-                    if self.is_valid(s_param):
-                        axes.plot(
-                            self.frequencies / 1e9,
-                            20 * np.log10(np.abs(s_param)),
-                            label="$S_{" + f"{j+1}{i+1}" + "}$",
-                        )
-                axes.legend()
-                axes.set_xlabel("Frequency, f [GHz]")
-                axes.set_ylabel("Magnitude, [dB]")
-                axes.grid(True)
-                fig.savefig(os.path.join(config.dirs.results_dir, f"S_x{i+1}.png"))
-
-    def render_diff_pair_s_params(self):
-        """Render differential pair S parameter plots to files."""
-        logger.info("Rendering differential pair S-parameter plots")
-        plt.style.use(PLOT_STYLE)
-        config = Config.get()
-        for pair in config.diff_pairs:
-            if (
-                pair.correct
-                and self.is_valid(self.s_params[pair.start_p][pair.start_p])
-                and self.is_valid(self.s_params[pair.start_n][pair.start_n])
-            ):
-                fig, axes = plt.subplots()
-                s_param = 0.5 * (
-                    self.s_params[pair.start_p][pair.start_p]
-                    - self.s_params[pair.start_n][pair.start_p]
-                    - self.s_params[pair.start_p][pair.start_n]
-                    + self.s_params[pair.start_n][pair.start_n]
-                )
-                if self.is_valid(s_param):
-                    axes.plot(
-                        self.frequencies / 1e9,
-                        20 * np.log10(np.abs(s_param)),
-                        label=pair.name + " $SDD_{11}$",
-                    )
-                s_param = 0.5 * (
-                    self.s_params[pair.stop_p][pair.start_p]
-                    - self.s_params[pair.stop_p][pair.start_n]
-                    - self.s_params[pair.stop_n][pair.start_p]
-                    + self.s_params[pair.stop_n][pair.start_n]
-                )
-                if self.is_valid(s_param):
-                    axes.plot(
-                        self.frequencies / 1e9,
-                        20 * np.log10(np.abs(s_param)),
-                        label=pair.name + " $SDD_{21}$",
-                    )
-                axes.legend()
-                axes.set_xlabel("Frequency, f [GHz]")
-                axes.set_ylabel("Magnitude, [dB]")
-                axes.grid(True)
-                fig.savefig(os.path.join(config.dirs.results_dir, f"SDD_{pair.name}"))
-
-    def render_diff_impedance(self):
-        """Render differential pair impedance plots to files."""
-        logger.info("Rendering differential pair impedance plots")
-        plt.style.use(PLOT_STYLE)
-        config = Config.get()
-        for pair in config.diff_pairs:
-            if (
-                pair.correct
-                and self.is_valid(self.s_params[pair.start_p][pair.start_p])
-                and self.is_valid(self.s_params[pair.start_n][pair.start_n])
-            ):
-                fig, axes = plt.subplots()
-                s11 = self.s_params[pair.start_p][pair.start_p]
-                s21 = self.s_params[pair.start_n][pair.start_p]
-                s12 = self.s_params[pair.start_p][pair.start_n]
-                s22 = self.s_params[pair.start_n][pair.start_n]
-                gamma = ((2 * s11 - s21) * (1 - s22 - s12) + (1 - s11 - s21) * (1 + s22 - 2 * s12)) / (
-                    (2 - s21) * (1 - s22 - s12) + (1 - s11 - s21) * (1 + s22)
-                )
-                if (
-                    self.reference_zs[pair.start_p]
-                    == self.reference_zs[pair.start_n]
-                    == self.reference_zs[pair.stop_p]
-                    == self.reference_zs[pair.stop_n]
-                ):
-                    z0 = self.reference_zs[pair.start_p]
-                    impedance = z0 * (1 + gamma) / (1 - gamma)
-
-                    fig, axs = plt.subplots(2)
-                    axs[0].plot(self.frequencies / 1e9, np.abs(impedance))
-                    axs[1].plot(
-                        self.frequencies / 1e9,
-                        np.angle(impedance, deg=True),
-                        linestyle="dashed",
-                        color="orange",
-                    )
-
-                    axs[0].set_ylabel(f"Magnitude, {pair.name} |Z| [\Omega]$")
-                    axs[1].set_ylabel(f"Angle, {pair.name} arg(Z) [^\circ]$")
-                    axs[1].set_xlabel("Frequency, f [GHz]")
-                    axs[0].grid(True)
-                    axs[1].grid(True)
-
-                    fig.savefig(
-                        os.path.join(config.dirs.results_dir, f"Z_diff_{pair.name}.png"),
-                        bbox_inches="tight",
-                    )
-                else:
-                    logger.error(
-                        f"Reference impedances for ports in differential pair {pair.name} are not all equal. Cannot calculate impedance"  # noqa: E501
-                    )
-
-    def calculate_min_max_impedance(self, s11_margin, z0):
-        """Calculate aproximated min-max values for impedance (it assumes phase is 0)."""
-        angles = [0, np.pi]
-        reflection_coeffs = 10 ** (-s11_margin / 20) * (np.cos(angles) + 1j * np.sin(angles))
-        impedances = z0 * (1 + reflection_coeffs) / (1 - reflection_coeffs)
-        return (abs(impedances[0]), abs(impedances[1]))
-
-    def render_impedance(self, include_margins=False):
-        """Render all ports impedance plots to files."""
-        logger.info("Rendering impedance plots")
-        plt.style.use(PLOT_STYLE)
-        config = Config.get()
-        for port, impedance in enumerate(self.impedances):
-            if self.is_valid(impedance):
-                fig, axs = plt.subplots(2)
-                axs[0].plot(self.frequencies / 1e9, np.abs(impedance))
-                axs[1].plot(
-                    self.frequencies / 1e9,
-                    np.angle(impedance, deg=True),
-                    linestyle="dashed",
-                    color="orange",
-                )
-
-                axs[0].set_ylabel("Magnitude, $|Z_{" + str(port) + r"}| [\Omega]$")
-                axs[1].set_ylabel("Angle, $arg(Z_{" + str(port) + r"}) [^\circ]$")
-                axs[1].set_xlabel("Frequency, f [GHz]")
-                axs[0].grid(True)
-                axs[1].grid(True)
-
-                if include_margins:
-                    s11_margin = Config.get().ports[port].dB_margin
-                    z0 = Config.get().ports[port].impedance
-                    min_z, max_z = self.calculate_min_max_impedance(s11_margin, z0)
-
-                    axs[0].axhline(np.real(min_z), color="red")
-                    axs[0].axhline(np.real(max_z), color="red")
-
-                fig.savefig(
-                    os.path.join(config.dirs.results_dir, f"Z_{port+1}.png"),
-                    bbox_inches="tight",
-                )
-
-    def render_smith(self):
-        """Render port reflection smithcharts to files."""
-        logger.info("Rendering smith charts")
-        plt.style.use(PLOT_STYLE)
-        net = skrf.Network(frequency=self.frequencies / 1e9, s=self.s_params.transpose(2, 0, 1))
-        config = Config.get()
-        for port in range(self.count):
-            if self.is_valid(self.s_params[port][port]):
-                fig, axes = plt.subplots()
-                s11_margin = Config.get().ports[port].dB_margin
-                vswr_margin = (10 ** (s11_margin / 20) + 1) / (10 ** (s11_margin / 20) - 1)
-                net.plot_s_smith(
-                    m=port,
-                    n=port,
-                    ax=axes,
-                    draw_labels=False,
-                    show_legend=True,
-                    draw_vswr=[vswr_margin],
-                )
-                fig.savefig(
-                    os.path.join(config.dirs.results_dir, f"S_{port+1}{port+1}_smith.png"),
-                    bbox_inches="tight",
-                )
-
-    def render_trace_delays(self):
-        """Render all trace delay plots to files."""
-        logger.info("Rendering trace delay plots")
-        plt.style.use(PLOT_STYLE)
-        config = Config.get()
-        for trace in config.traces:
-            if trace.correct and self.is_valid(self.delays[trace.stop][trace.start]):
-                fig, axes = plt.subplots()
-                axes.plot(
-                    self.frequencies / 1e9,
-                    self.delays[trace.stop][trace.start] * 1e9,
-                    label=f"{trace.name} delay",
-                )
-                axes.legend()
-                axes.set_xlabel("Frequency, f [GHz]")
-                axes.set_ylabel("Trace delay, [ns]")
-                axes.grid(True)
-                fig.savefig(os.path.join(config.dirs.results_dir, f"{trace.name}_delay.png"))
-
-        for pair in config.diff_pairs:
-            if (
-                pair.correct
-                and self.is_valid(self.delays[pair.stop_p][pair.start_n])
-                and self.is_valid(self.delays[pair.stop_n][pair.start_p])
-            ):
-                fig, axes = plt.subplots()
-                axes.plot(
-                    self.frequencies / 1e9,
-                    self.delays[pair.stop_p][pair.start_n] * 1e9,
-                    label=f"{pair.name} n delay",
-                )
-                axes.plot(
-                    self.frequencies / 1e9,
-                    self.delays[pair.stop_n][pair.start_p] * 1e9,
-                    label=f"{pair.name} p delay",
-                )
-                axes.legend()
-                axes.set_xlabel("Frequency, f [GHz]")
-                axes.set_ylabel("Trace delay, [ns]")
-                axes.grid(True)
-                fig.savefig(os.path.join(config.dirs.results_dir, f"{pair.name}_delay.png"))
-
     def save_to_file(self) -> None:
         """Save all parameters to files."""
-        config = Config.get()
         for i, _ in enumerate(self.s_params):
             if self.is_valid(self.s_params[i][i]):
-                self.save_port_to_file(i, config.dirs.results_dir)
+                self._save_port_to_file(i)
+        for i in self.differential_params:
+            self._save_differential_pair_to_file(i)
 
-    def save_port_to_file(self, port_number: int, path) -> None:
+    def _save_port_to_file(self, port_number: int) -> None:
         """Save all parameters from single excitation."""
-        frequencies = np.transpose([self.frequencies])
-        s_params = np.transpose(self.s_params[:, port_number, :], (1, 0))
-        delays = np.transpose(self.delays[:, port_number, :], (1, 0))
-        impedances = np.transpose([self.impedances[port_number]])
+        s_params = self.s_params[:, port_number, :]
+        delays = self.delays[:, port_number, :]
+        impedances = self.impedances[port_number]
 
-        header: str = "Frequency [Hz], "
-        header += "".join([f"|S{i}{port_number}| [-], " for i, _ in enumerate(self.s_params[port_number])])
-        header += "".join([f"Arg(S{i}{port_number}) [-], " for i, _ in enumerate(self.s_params[port_number])])
-        header += "".join([f"Delay {port_number}>{i} [s], " for i, _ in enumerate(self.delays[port_number])])
-        header += f"|Z{port_number}| [Ohm] , "
-        header += f"Arg(Z{port_number}) [-]"
+        data = []
+        data.append(("Frequency (Hz)", self.frequencies))
+        data.extend([(f"S{i}{port_number}", s_params[i]) for i in range(s_params.shape[0])])
+        data.extend([(f"D{i}{port_number} (s)", delays[i]) for i in range(delays.shape[0])])
+        data.append((f"Z{port_number} (ohms)", impedances))
+        data = OrderedDict(data)
+        df = pd.DataFrame(data)
 
-        output = np.hstack(
-            [
-                frequencies,
-                np.abs(s_params),
-                np.angle(s_params),
-                delays,
-                np.abs(impedances),
-                np.angle(impedances),
-            ]
-        )
-        file_path = f"Port_{port_number}_data.csv"
-        logger.debug("Saving port no. %d parameters to file: %s", port_number, file_path)
-        np.savetxt(os.path.join(path, file_path), output, fmt="%e", delimiter=", ", header=header, comments="")
+        config = Config.get()
+        file_name = f"port_{port_number}.csv"
+        file_path = os.path.join(config.dirs.results_dir, file_name)
+        logger.info("Saving port no. %d parameters to file: %s", port_number, file_path)
+        df.to_csv(file_path, index=False)
+
+    def _save_differential_pair_to_file(self, index: int) -> None:
+        """Save differential pair data to file"""
+        config = Config.get()
+        pair = config.diff_pairs[index]
+        params = self.differential_params[index]
+ 
+        data = OrderedDict([
+            ("Frequency (Hz)", self.frequencies),
+            ("S11", params.s11),
+            ("S21", params.s21),
+            ("Zd (ohms)", params.Z),
+        ])
+        df = pd.DataFrame(data)
+ 
+        file_name = f"diffpair_{index}_{pair.start_p}{pair.stop_p}{pair.start_n}{pair.stop_n}.csv"
+        file_path = os.path.join(config.dirs.results_dir, file_name)
+        logger.info("Saving diffpair no. %d parameters to file: %s", index, file_path)
+        df.to_csv(file_path, index=False)
 
     @staticmethod
     def is_valid(array: np.ndarray):

@@ -139,7 +139,7 @@ def get_triangles(input_filename: str) -> np.ndarray:
     # mesh = mesher.triangulate()
     mesh = mesher.triangulate(opts=f"q{nanomesh_config.quality}a{nanomesh_config.max_triangle_area}")
 
-    filename = os.path.join(config.dirs.image_dir, input_filename + "_mesh.png")
+    filename = os.path.join(config.dirs.geometry_dir, input_filename.removeprefix(".png") + "_mesh.png")
     logger.debug("Saving mesh to file: %s", filename)
     mesh.plot_mpl(lw=0.1)
     plt.savefig(filename, dpi=600)
