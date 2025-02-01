@@ -821,7 +821,6 @@ Prints the help message.
 &lt;/tr>
 &lt;tr>
 &lt;td>
-&lt;code class="cli_arg">-c [file]&lt;/code>
 &lt;code class="cli_arg">--config [file]&lt;/code>
 &lt;/td>
 &lt;td>
@@ -851,11 +850,20 @@ Specifies the location of the: geometry data, simulation results, export E-field
 &lt;/tr>
 &lt;tr>
 &lt;td>
+&lt;code class="cli_arg">-c&lt;/code>
+&lt;code class="cli_arg">--convert&lt;/code>
+&lt;/td>
+&lt;td>
+Convert Gerber files to images.
+&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>
 &lt;code class="cli_arg">-g&lt;/code>
 &lt;code class="cli_arg">--geometry&lt;/code>
 &lt;/td>
 &lt;td>
-Flag to create geometry files for openEMS.
+Create geometry files for openEMS.
 &lt;/td>
 &lt;/tr>
 &lt;tr>
@@ -864,7 +872,7 @@ Flag to create geometry files for openEMS.
 &lt;code class="cli_arg">--simulate&lt;/code>
 &lt;/td>
 &lt;td>
-Flag to run openEMS simulation.
+Run openEMS simulation.
 &lt;/td>
 &lt;/tr>
 &lt;tr>
@@ -873,7 +881,7 @@ Flag to run openEMS simulation.
 &lt;code class="cli_arg">--postprocess&lt;/code>
 &lt;/td>
 &lt;td>
-Flag to process openEMS results into graphs.
+Process openEMS results into graphs.
 &lt;/td>
 &lt;/tr>
 &lt;tr>
@@ -882,7 +890,7 @@ Flag to process openEMS results into graphs.
 &lt;code class="cli_arg">--all&lt;/code>
 &lt;/td>
 &lt;td>
-Flag to enable geometry, simulate and postprocess steps.
+Run convert, geometry, simulate, and postprocess steps.
 &lt;/td>
 &lt;/tr>
 &lt;tr>
@@ -925,6 +933,34 @@ Set logging level: &lt;code>[DEBUG, INFO, WARNING, ERROR]&lt;/code>.
 &lt;/tr>
 &lt;/tbody>
 &lt;/table>
+&lt;h2>Explanation&lt;span class="hx-absolute -hx-mt-20" id="explanation">&lt;/span>
+&lt;a href="#explanation" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;p>These are the following steps taken to go from your exported PCB files to graphs.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Step&lt;/th>
+&lt;th>Description&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Convert&lt;/td>
+&lt;td>Gerber files are converted into images using &lt;code>gerbv&lt;/code>.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Geometry&lt;/td>
+&lt;td>PCB image files, via drills, simulation port and PCB stackup configuration are read to produce a single &lt;code>geometry.xml&lt;/code> file.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Simulation&lt;/td>
+&lt;td>openEMS imports the &lt;code>geometry.xml&lt;/code> file and simulation configuration to produce E-field data (if exported) and time domain port measurements for each excitation source.&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Postprocessing&lt;/td>
+&lt;td>openEMS data is processed into S-parameters, impedance values (for signal traces and differential traces), and graphs are generated for each of these accordingly&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
 &lt;h2>Examples&lt;span class="hx-absolute -hx-mt-20" id="examples">&lt;/span>
 &lt;a href="#examples" class="subheading-anchor" aria-label="Permalink for this section">&lt;/a>&lt;/h2>&lt;p>Consider an example where our directory has:&lt;/p>
 &lt;ul>
@@ -937,7 +973,7 @@ Set logging level: &lt;code>[DEBUG, INFO, WARNING, ERROR]&lt;/code>.
 &lt;li>bash shell is already inside this directory.&lt;/li>
 &lt;/ul>
 &lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
-&lt;div class="filename not-prose" dir="auto">Run simulation and output to default location&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -a&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;div class="filename not-prose" dir="auto">Run entire pipeline and output to default location&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -a&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
 &lt;button
 class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
 title="Copy code"
@@ -948,7 +984,18 @@ title="Copy code"
 &lt;/div>
 &lt;/div>
 &lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
-&lt;div class="filename not-prose" dir="auto">Run simulation and input/output from custom locations&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -c &lt;span class="s2">&amp;#34;custom_simulation.json&amp;#34;&lt;/span> -i &lt;span class="s2">&amp;#34;custom_fab/&amp;#34;&lt;/span> -o &lt;span class="s2">&amp;#34;custom_results/&amp;#34;&lt;/span> -a&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;div class="filename not-prose" dir="auto">Run entire pipeline and input/output from custom locations&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems --config &lt;span class="s2">&amp;#34;custom_simulation.json&amp;#34;&lt;/span> -i &lt;span class="s2">&amp;#34;custom_fab/&amp;#34;&lt;/span> -o &lt;span class="s2">&amp;#34;custom_results/&amp;#34;&lt;/span> -a&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;button
+class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
+title="Copy code"
+>
+&lt;div class="copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;div class="success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4">&lt;/div>
+&lt;/button>
+&lt;/div>
+&lt;/div>
+&lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
+&lt;div class="filename not-prose" dir="auto">Run convert to images pass only&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -c&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
 &lt;button
 class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
 title="Copy code"
@@ -992,7 +1039,7 @@ title="Copy code"
 &lt;/div>
 &lt;/div>
 &lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
-&lt;div class="filename not-prose" dir="auto">Run simulation with custom number of threads&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -g --threads &lt;span class="m">16&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;div class="filename not-prose" dir="auto">Run simulation with custom number of threads&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -a --threads &lt;span class="m">16&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
 &lt;button
 class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
 title="Copy code"
@@ -1003,7 +1050,7 @@ title="Copy code"
 &lt;/div>
 &lt;/div>
 &lt;div class="hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code">
-&lt;div class="filename not-prose" dir="auto">Run simulation and export field data&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -g --export-field&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
+&lt;div class="filename not-prose" dir="auto">Run simulation and export field data&lt;/div>&lt;div>&lt;div class="highlight">&lt;pre tabindex="0" class="chroma">&lt;code class="language-bash" data-lang="bash">&lt;span class="line">&lt;span class="cl">gerber2ems -a --export-field&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/div>&lt;div class="hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-8">
 &lt;button
 class="hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50"
 title="Copy code"
