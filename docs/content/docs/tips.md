@@ -13,8 +13,8 @@ params:
 - When running geometry pass nanomesh has to convert image of layers to mesh data.
 - With insufficient settings there will be deletion of traces or merging of traces.
 - Modify [nanomesh configuration]({{< abs_url link="/docs/configuration/#configuring-nanomesh" >}}) to fix this.
-    - Increasing ```nanomesh.quality```.
-    - Decreasing ```nanomesh.min_spacing```.
+    - Decrease ```nanomesh.precision``` to reduce mesh vertex position error.
+    - Decrease ```nanomesh.minimum_angle``` to permit more aggressive triangulation.
 
 **Tip 2: Fix simulation port and drill offsets**
 - Currently there isn't automatic alignment of drill and component positions to the Gerber files.

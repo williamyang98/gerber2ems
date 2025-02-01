@@ -173,10 +173,11 @@ def get(
 
 class NanomeshConfig:
     def __init__(self, json: Any):
-        self.quality = int(get(json, ["nanomesh", "quality"], (int,), 6))
-        self.max_triangle_area = int(get(json, ["nanomesh", "max_triangle_area"], (int,), 100000))
-        self.min_spacing = float(get(json, ["nanomesh", "min_spacing"], (int, float), 0.05))
-        self.max_edge_distance = float(get(json, ["nanomesh", "max_edge_distance"], (int, float), 100000))
+        self.threshold = int(get(json, ["nanomesh", "threshold"], (int,), 127))
+        self.precision = float(get(json, ["nanomesh", "precision"], (int, float), 5))
+        self.max_edge_distance = float(get(json, ["nanomesh", "max_edge_distance"], (int, float), 10))
+        self.minimum_angle = int(get(json, ["nanomesh", "minimum_angle"], (int,), 20))
+        self.max_triangle_area = int(get(json, ["nanomesh", "max_triangle_area"], (int,), 100))
 
 class DirectoryConfig:
     def __init__(self, input_dir: str, output_dir: str):

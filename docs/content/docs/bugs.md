@@ -24,6 +24,32 @@ params:
 - Modify the [simulation settings]({{< abs_url link="/docs/configuration/#simulation-settings" >}}) to fix this
     - Increase ```margin.xy``` and ```margin.z``` to increase size of the air gap to simulate around the PCB.
 
-**Bug 3: openEMS will randomly segfault during startup**
-- When running simulation through ```gerber2ems -s``` there is a small chance of crashing.
-- Running simulation pass again usually fixes this.
+**Bug 3: openEMS will randomly crash**
+- When running openEMS simulation through there is a small chance of crashing with a segmentation error.
+- Rerunning until it stops crashing is the only know work around.
+- Use the retry script at ```./scripts/retry.sh``` to repeat a command until a successful pass is done.
+- Break down simulation into multiple steps along with the retry script to automate around openEMS crashes.
+
+```bash {filename="Simulate differential pair with retry on error"}
+# Create convenient alias in bash shell
+alias retry=$(realpath ./scripts/retry.sh)
+
+# Go to differential pair example
+cd ./examples/differential
+
+# Convert Gerber to image conversion step (does not crash)
+gerber2ems --convert
+
+# Create openEMS geometry files (does not crash)
+gerber2ems --geometry
+
+# Run openEMS simulation (this can crash)
+retry gerber2ems --simulate
+
+# Postprocess data (this can crash since we use openEMS api to parse simulation results)
+retry gerber2ems --postprocess
+
+# Render data (this can crash since we use openEMS api to parse simulation results)
+retry gerber2ems --render
+
+```

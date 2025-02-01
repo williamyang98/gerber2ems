@@ -18,7 +18,7 @@ import multiprocessing
 from gerber2ems.config import Config
 from gerber2ems.constants import (
     UNIT,
-    PIXEL_SIZE,
+    PIXEL_SIZE_MICRONS,
     BORDER_THICKNESS,
     STACKUP_FORMAT_VERSION,
 )
@@ -62,12 +62,13 @@ def gbr_to_png(gerber_filename: str, edge_filename: str, output_filename: str) -
 
     Generates PNG of a gerber using gerbv.
     Edge cuts gerber is used to crop the image correctly.
-    Output DPI is based on PIXEL_SIZE constant.
+    Output DPI is based on PIXEL_SIZE_MICRONS constant.
     """
     logger.info("Generating PNG for %s", gerber_filename)
     not_cropped_name = f"{output_filename}_not_cropped.png"
 
-    dpi = 1 / (PIXEL_SIZE * UNIT / 0.0254)
+    TOTAL_MILLIMETERS_IN_MIL = 0.0254
+    dpi = 1 / (PIXEL_SIZE_MICRONS * UNIT / TOTAL_MILLIMETERS_IN_MIL)
     if not dpi.is_integer():
         logger.warning("DPI is not an integer number: %f", dpi)
 
@@ -101,8 +102,8 @@ def get_dimensions(input_filename: str) -> Tuple[int, int]:
     path = os.path.join(config.dirs.image_dir, input_filename)
     image = PIL.Image.open(path)
     image_width, image_height = image.size
-    height = image_height * PIXEL_SIZE - BORDER_THICKNESS
-    width = image_width * PIXEL_SIZE - BORDER_THICKNESS
+    height = image_height * PIXEL_SIZE_MICRONS - BORDER_THICKNESS
+    width = image_width * PIXEL_SIZE_MICRONS - BORDER_THICKNESS
     logger.debug("Board dimensions read from file are: height:%f width:%f", height, width)
     return (width, height)
 
@@ -116,28 +117,31 @@ def get_triangles(input_filename: str) -> np.ndarray:
     Returns a list of triangles, where each triangle consists of coordinates for each vertex.
     """
     config = Config.get()
+    nanomesh_config = config.nanomesh
     path = os.path.join(config.dirs.image_dir, input_filename)
     image = PIL.Image.open(path)
-    gray = image.convert("L")
-    threshold_cutoff = 32
-    thresh = gray.point(lambda p: 255 if p < threshold_cutoff else 0)
-    image_data = np.array(thresh)
+    image_grayscale = image.convert("L")
+    image_binarized = image_grayscale.point(lambda p: 255 if p < nanomesh_config.threshold else 0)
+    image_data = np.array(image_binarized)
     copper = Image(image_data)
 
     mesher = Mesher2D(copper)
-    # These constans are set so there won't be to many triangles.
-    # If in some case triangles are too coarse they should be adjusted
-    # mesher.generate_contour(max_edge_dist=10000, precision=2)
-    nanomesh_config = Config.get().nanomesh
+    # https://nanomesh.readthedocs.io/en/latest/api.meshing.html#nanomesh.Mesher2D.generate_contour
+    PIXEL_SIZE_CM = PIXEL_SIZE_MICRONS/1e3
+    PIXEL_AREA_CM2 = PIXEL_SIZE_CM**2
     mesher.generate_contour(
-        max_edge_dist=nanomesh_config.max_edge_distance,
-        precision=nanomesh_config.min_spacing,
+        level=nanomesh_config.threshold,
+        max_edge_dist=int(nanomesh_config.max_edge_distance/PIXEL_SIZE_CM),
+        precision=int(nanomesh_config.precision/PIXEL_SIZE_MICRONS),
         group_regions=False
     )
     mesher.plot_contour()
-    # mesh = mesher.triangulate(opts="a100000")
-    # mesh = mesher.triangulate()
-    mesh = mesher.triangulate(opts=f"q{nanomesh_config.quality}a{nanomesh_config.max_triangle_area}")
+    # https://rufat.be/triangle/API.html#triangle.triangulate
+    triangulation_options = [
+        "q", nanomesh_config.minimum_angle,
+        "a", (nanomesh_config.max_triangle_area/PIXEL_AREA_CM2),
+    ]
+    mesh = mesher.triangulate(opts="".join(map(str, triangulation_options)))
 
     filename = os.path.join(config.dirs.geometry_dir, input_filename.removeprefix(".png") + "_mesh.png")
     logger.debug("Saving mesh to file: %s", filename)
@@ -192,7 +196,7 @@ def get_triangles(input_filename: str) -> np.ndarray:
 
 def image_to_board_coordinates(point: np.ndarray) -> np.ndarray:
     """Transform point coordinates from image to board coordinates."""
-    return (point * PIXEL_SIZE) - [BORDER_THICKNESS / 2, BORDER_THICKNESS / 2]
+    return (point * PIXEL_SIZE_MICRONS) - [BORDER_THICKNESS / 2, BORDER_THICKNESS / 2]
 
 
 def get_vias() -> List[List[float]]:
