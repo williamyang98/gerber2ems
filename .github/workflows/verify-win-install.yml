@@ -5,6 +5,9 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  SIM_DIR: examples/differential
+
 jobs:
   skip_check:
     continue-on-error: false
@@ -57,16 +60,48 @@ jobs:
         . ./vendor/update_path.sh
         gerber2ems -h
 
-    - name: Perform geometry pass for gerber2ems
+    - name: Perform Gerber to image conversion
       shell: bash
       run: |
         . ./venv/Scripts/activate
         . ./vendor/update_path.sh
-        cd examples/differential
-        gerber2ems -a --debug
+        cd ${{ env.SIM_DIR }}
+        gerber2ems --debug --convert
 
-    - name: Upload geometry pass files
+    - name: Generate geometry files for openEMS
+      shell: bash
+      run: |
+        . ./venv/Scripts/activate
+        . ./vendor/update_path.sh
+        cd ${{ env.SIM_DIR }}
+        gerber2ems --debug --geometry
+
+    - name: Run openEMS simulation
+      shell: bash
+      run: |
+        . ./venv/Scripts/activate
+        . ./vendor/update_path.sh
+        cd ${{ env.SIM_DIR }}
+        gerber2ems --debug --simulate
+
+    - name: Post process the openEMS simulation data
+      shell: bash
+      run: |
+        . ./venv/Scripts/activate
+        . ./vendor/update_path.sh
+        cd ${{ env.SIM_DIR }}
+        gerber2ems --debug --postprocess
+
+    - name: Render graphs of post processed data
+      shell: bash
+      run: |
+        . ./venv/Scripts/activate
+        . ./vendor/update_path.sh
+        cd ${{ env.SIM_DIR }}
+        gerber2ems --debug --render
+
+    - name: Upload gerber2ems output files
       uses: actions/upload-artifact@v4
       with:
         name: verify_win_install
-        path: ${{github.workspace}}/examples/differential
+        path: ${{ github.workspace }}/${{ env.SIM_DIR }}
