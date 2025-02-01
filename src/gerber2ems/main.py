@@ -121,8 +121,7 @@ def postprocess() -> Postprocesor:
     """Postprocess data from the simulation."""
     sim = Simulation()
     sim.load_geometry()
-    if len(sim.ports) == 0:
-        add_virtual_ports(sim)
+    add_virtual_ports(sim)
     config = Config.get()
     frequencies = np.linspace(config.start_frequency, config.stop_frequency, 1001)
     post = Postprocesor(frequencies, len(config.ports))

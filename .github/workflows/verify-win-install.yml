@@ -53,12 +53,16 @@ jobs:
         . ./vendor/update_path.sh
         pip install -e .
 
+    - name: Copy retry script due to openEMS randomly seg faulting
+      shell: bash
+      run: cp ./scripts/retry.sh /usr/bin/retry
+
     - name: Check if gerber2ems runs
       shell: bash
       run: |
         . ./venv/Scripts/activate
         . ./vendor/update_path.sh
-        gerber2ems -h
+        retry gerber2ems -h
 
     - name: Perform Gerber to image conversion
       shell: bash
@@ -66,7 +70,7 @@ jobs:
         . ./venv/Scripts/activate
         . ./vendor/update_path.sh
         cd ${{ env.SIM_DIR }}
-        gerber2ems --debug --convert
+        retry gerber2ems --debug --convert
 
     - name: Generate geometry files for openEMS
       shell: bash
@@ -74,7 +78,7 @@ jobs:
         . ./venv/Scripts/activate
         . ./vendor/update_path.sh
         cd ${{ env.SIM_DIR }}
-        gerber2ems --debug --geometry
+        retry gerber2ems --debug --geometry
 
     - name: Run openEMS simulation
       shell: bash
@@ -82,7 +86,7 @@ jobs:
         . ./venv/Scripts/activate
         . ./vendor/update_path.sh
         cd ${{ env.SIM_DIR }}
-        gerber2ems --debug --simulate
+        retry gerber2ems --debug --simulate
 
     - name: Post process the openEMS simulation data
       shell: bash
@@ -90,7 +94,7 @@ jobs:
         . ./venv/Scripts/activate
         . ./vendor/update_path.sh
         cd ${{ env.SIM_DIR }}
-        gerber2ems --debug --postprocess
+        retry gerber2ems --debug --postprocess
 
     - name: Render graphs of post processed data
       shell: bash
@@ -98,7 +102,7 @@ jobs:
         . ./venv/Scripts/activate
         . ./vendor/update_path.sh
         cd ${{ env.SIM_DIR }}
-        gerber2ems --debug --render
+        retry gerber2ems --debug --render
 
     - name: Upload gerber2ems output files
       uses: actions/upload-artifact@v4

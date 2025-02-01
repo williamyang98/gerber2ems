@@ -348,7 +348,7 @@ class Simulation:
         port_bbox = self._get_port_bbox(port_config)
         logger.debug(f"Adding virtual port {port_number} at: {port_bbox}")
         port = self.fdtd.AddMSLPort(
-            len(self.ports),
+            port_number,
             self.port_material,
             port_bbox.start,
             port_bbox.stop,
