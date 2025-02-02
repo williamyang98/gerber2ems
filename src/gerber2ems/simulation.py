@@ -381,8 +381,8 @@ class Simulation:
         x_coords = []
         y_coords = []
         for i in range(VIA_POLYGON):
-            x_coords.append(x_pos + np.sin(i / VIA_POLYGON * 2 * np.pi) * diameter / 2)
-            y_coords.append(y_pos + np.cos(i / VIA_POLYGON * 2 * np.pi) * diameter / 2)
+            x_coords.append(round(x_pos + np.sin(i / VIA_POLYGON * 2 * np.pi) * diameter / 2))
+            y_coords.append(round(y_pos + np.cos(i / VIA_POLYGON * 2 * np.pi) * diameter / 2))
         self.via_filling_material.AddLinPoly([x_coords, y_coords], "z", -thickness, thickness, priority=config.material_priorities.via_filling)
 
         x_coords = []

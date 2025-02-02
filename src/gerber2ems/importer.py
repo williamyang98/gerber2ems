@@ -19,7 +19,6 @@ from gerber2ems.config import Config
 from gerber2ems.constants import (
     UNIT,
     PIXEL_SIZE_MICRONS,
-    BORDER_THICKNESS,
     STACKUP_FORMAT_VERSION,
 )
 
@@ -72,10 +71,13 @@ def gbr_to_png(gerber_filename: str, edge_filename: str, output_filename: str) -
     if not dpi.is_integer():
         logger.warning("DPI is not an integer number: %f", dpi)
 
-    gerbv_command = f"gerbv {gerber_filename} {edge_filename}"
-    gerbv_command += " --background=#000000 --foreground=#ffffffff --foreground=#0000ff"
-    gerbv_command += f" -o {not_cropped_name}"
-    gerbv_command += f" --dpi={dpi} --export=png -a"
+    gerbv_command = " ".join([
+         "gerbv",
+        f"{gerber_filename} {edge_filename}",
+        f"--output={not_cropped_name}",
+        f"--dpi={dpi} --export=png --antialias --border=0",
+         "--background=#000000 --foreground=#ffffffff --foreground=#0000ff",
+    ])
 
     subprocess.call(gerbv_command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
 
@@ -102,8 +104,8 @@ def get_dimensions(input_filename: str) -> Tuple[int, int]:
     path = os.path.join(config.dirs.image_dir, input_filename)
     image = PIL.Image.open(path)
     image_width, image_height = image.size
-    height = image_height * PIXEL_SIZE_MICRONS - BORDER_THICKNESS
-    width = image_width * PIXEL_SIZE_MICRONS - BORDER_THICKNESS
+    height = image_height * PIXEL_SIZE_MICRONS
+    width = image_width * PIXEL_SIZE_MICRONS
     logger.debug("Board dimensions read from file are: height:%f width:%f", height, width)
     return (width, height)
 
@@ -154,11 +156,7 @@ def get_triangles(input_filename: str) -> np.ndarray:
 
     triangles: np.ndarray = np.empty((len(cells), 3, 2))
     for i, cell in enumerate(cells):
-        triangles[i] = [
-            image_to_board_coordinates(points[cell[0]]),
-            image_to_board_coordinates(points[cell[1]]),
-            image_to_board_coordinates(points[cell[2]]),
-        ]
+        triangles[i] = [points[cell[i]]*PIXEL_SIZE_MICRONS for i in range(3)]
 
     # Selecting only triangles that represent copper
     # mask = kinds == 2.0
@@ -192,12 +190,6 @@ def get_triangles(input_filename: str) -> np.ndarray:
     logger.debug("Found %d triangles for %s", len(triangles[mask]), input_filename)
 
     return triangles[mask]
-
-
-def image_to_board_coordinates(point: np.ndarray) -> np.ndarray:
-    """Transform point coordinates from image to board coordinates."""
-    return (point * PIXEL_SIZE_MICRONS) - [BORDER_THICKNESS / 2, BORDER_THICKNESS / 2]
-
 
 def get_vias() -> List[List[float]]:
     """Get via information from excellon file.
