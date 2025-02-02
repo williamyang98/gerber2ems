@@ -234,7 +234,7 @@ class Config:
         self.margin_z = int(get(json, ["margin", "z"], (float, int), 3000))
         self.margin_mesh_xy = int(get(json, ["mesh", "margin", "xy"], (float, int), 200))
         self.margin_mesh_z = int(get(json, ["mesh", "margin", "z"], (float, int), 200))
-        self.smoothing_ratio = float(get(json, ["mesh", "smoothing_ratio"], float, 2))
+        self.smoothing_ratio = float(get(json, ["mesh", "smoothing_ratio"], (float, int), 2))
         self.via_plating = int(get(json, ["via", "plating_thickness"], (int, float), 50))
         self.via_filling_epsilon = float(get(json, ["via", "filling_epsilon"], (int, float), 1))
         self.x_offset = float(get(json, ["offset", "x"], (int, float), 0))
