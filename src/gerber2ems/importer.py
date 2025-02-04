@@ -293,11 +293,18 @@ def get_ports_from_file(filename: str) -> List[Tuple[int, Tuple[float, float], f
                 y = float(row[4])
                 x = x - x_offset
                 y = y - y_offset
+                rotation = float(row[5])
+                # NOTE: when kicad places components at the bottom it mirrors rotation so we mirror it back
+                side = row[6].strip()
+                if side == "bottom":
+                    rotation += 180
+                    if rotation >= 360:
+                        rotation -= 360
                 ports.append(
                     (
                         number,
                         (float(x) / 1000 / UNIT, float(y) / 1000 / UNIT),
-                        float(row[5]),
+                        rotation,
                     )
                 )
                 logging.debug("Found port #%i position in pos file", number)
